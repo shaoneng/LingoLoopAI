@@ -1,0 +1,35 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom global styles */
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Custom animations */
+.animation-delay-2000 {
+  animation-delay: 2s;
+}
+
+/* Background grid patterns */
+.bg-grid-blue-100\/\[0\.05\] {
+  background-image: linear-gradient(to right, #dbeafe 1px, transparent 1px),
+                    linear-gradient(to bottom, #dbeafe 1px, transparent 1px);
+}
+
+.bg-grid-gray-200\/\[0\.05\] {
+  background-image: linear-gradient(to right, #e5e7eb 1px, transparent 1px),
+                    linear-gradient(to bottom, #e5e7eb 1px, transparent 1px);
+}
+
+.bg-grid-white\/\[0\.02\] {
+  background-image: linear-gradient(to right, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+                    linear-gradient(to bottom, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+}

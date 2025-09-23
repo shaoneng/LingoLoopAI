@@ -1,0 +1,28 @@
+name = "lingoloop-ai-api"
+main = "src/index.ts"
+compatibility_date = "2024-09-23"
+compatibility_flags = ["nodejs_compat"]
+
+[env.production]
+vars = { ENVIRONMENT = "production" }
+
+[env.staging]
+vars = { ENVIRONMENT = "staging" }
+
+[[env.production.kv_namespaces]]
+binding = "LINGOLOOP_KV"
+id = "your-kv-namespace-id"
+
+[env.production.d1_databases]
+binding = "LINGOLOOP_DB"
+database_name = "lingoloop-db"
+database_id = "your-d1-database-id"
+
+[[env.staging.kv_namespaces]]
+binding = "LINGOLOOP_KV"
+id = "your-staging-kv-namespace-id"
+
+[env.staging.d1_databases]
+binding = "LINGOLOOP_DB"
+database_name = "lingoloop-db-staging"
+database_id = "your-staging-d1-database-id"
