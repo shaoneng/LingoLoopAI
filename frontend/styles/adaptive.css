@@ -1,0 +1,691 @@
+/**
+ * Adaptive User Experience System Styles
+ * Provides dynamic styling based on user experience level, learning patterns,
+ * and performance data
+ */
+
+/* ===== EXPERIENCE LEVEL STYLES ===== */
+
+/* Beginner Experience Level */
+.adaptive-beginner {
+  /* Visual hierarchy */
+  --spacing-unit: 1.5rem;
+  --border-radius: 12px;
+  --font-size-base: 1rem;
+  --line-height: 1.8;
+  --content-density: spacious;
+
+  /* Colors - more contrast and warmth */
+  --primary-color: #3b82f6;
+  --primary-hover: #2563eb;
+  --secondary-color: #10b981;
+  --background-primary: #ffffff;
+  --background-secondary: #f8fafc;
+  --background-tertiary: #f1f5f9;
+  --text-primary: #1f2937;
+  --text-secondary: #4b5563;
+  --text-tertiary: #6b7280;
+  --border-color: #e2e8f0;
+  --success-color: #10b981;
+  --warning-color: #f59e0b;
+  --error-color: #ef4444;
+
+  /* Animations - subtle and gentle */
+  --animation-duration: 0.3s;
+  --animation-timing: ease-out;
+  --animation-scale: 1.02;
+}
+
+/* Intermediate Experience Level */
+.adaptive-intermediate {
+  /* Visual hierarchy */
+  --spacing-unit: 1.25rem;
+  --border-radius: 8px;
+  --font-size-base: 0.95rem;
+  --line-height: 1.6;
+  --content-density: balanced;
+
+  /* Colors - balanced and professional */
+  --primary-color: #3b82f6;
+  --primary-hover: #2563eb;
+  --secondary-color: #8b5cf6;
+  --background-primary: #ffffff;
+  --background-secondary: #f9fafb;
+  --background-tertiary: #f3f4f6;
+  --text-primary: #111827;
+  --text-secondary: #374151;
+  --text-tertiary: #6b7280;
+  --border-color: #e5e7eb;
+  --success-color: #059669;
+  --warning-color: #d97706;
+  --error-color: #dc2626;
+
+  /* Animations - moderate */
+  --animation-duration: 0.25s;
+  --animation-timing: ease-in-out;
+  --animation-scale: 1.01;
+}
+
+/* Advanced Experience Level */
+.adaptive-advanced {
+  /* Visual hierarchy */
+  --spacing-unit: 1rem;
+  --border-radius: 6px;
+  --font-size-base: 0.9rem;
+  --line-height: 1.5;
+  --content-density: dense;
+
+  /* Colors - professional and efficient */
+  --primary-color: #2563eb;
+  --primary-hover: #1d4ed8;
+  --secondary-color: #7c3aed;
+  --background-primary: #ffffff;
+  --background-secondary: #ffffff;
+  --background-tertiary: #f9fafb;
+  --text-primary: #111827;
+  --text-secondary: #1f2937;
+  --text-tertiary: #6b7280;
+  --border-color: #d1d5db;
+  --success-color: #059669;
+  --warning-color: #d97706;
+  --error-color: #dc2626;
+
+  /* Animations - minimal */
+  --animation-duration: 0.2s;
+  --animation-timing: linear;
+  --animation-scale: 1.005;
+}
+
+/* Expert Experience Level */
+.adaptive-expert {
+  /* Visual hierarchy */
+  --spacing-unit: 0.75rem;
+  --border-radius: 4px;
+  --font-size-base: 0.85rem;
+  --line-height: 1.4;
+  --content-density: compact;
+
+  /* Colors - minimal and high contrast */
+  --primary-color: #1e40af;
+  --primary-hover: #1e3a8a;
+  --secondary-color: #6d28d9;
+  --background-primary: #ffffff;
+  --background-secondary: #ffffff;
+  --background-tertiary: #ffffff;
+  --text-primary: #000000;
+  --text-secondary: #374151;
+  --text-tertiary: #9ca3af;
+  --border-color: #d1d5db;
+  --success-color: #047857;
+  --warning-color: #b45309;
+  --error-color: #b91c1c;
+
+  /* Animations - none or instant */
+  --animation-duration: 0.1s;
+  --animation-timing: linear;
+  --animation-scale: 1;
+}
+
+/* ===== LEARNING PATTERN STYLES ===== */
+
+/* Visual Learner */
+.learning-pattern-visual {
+  --visual-emphasis: high;
+  --icon-size: 1.5rem;
+  --chart-animation-duration: 1s;
+  --color-coding-intensity: 100%;
+}
+
+.learning-pattern-visual .visual-element {
+  border: 2px solid var(--primary-color);
+  border-radius: var(--border-radius);
+  padding: 1rem;
+  background: var(--background-secondary);
+}
+
+.learning-pattern-visual .data-visualization {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* Auditory Learner */
+.learning-pattern-auditory {
+  --audio-emphasis: high;
+  --waveform-animation: active;
+  --pronunciation-highlight: true;
+}
+
+.learning-pattern-auditory .audio-control {
+  background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+  color: white;
+  border: none;
+  padding: 1rem 2rem;
+  border-radius: 50px;
+}
+
+.learning-pattern-auditory .pronunciation-guide {
+  background: #fef3c7;
+  border: 1px solid #fbbf24;
+  border-radius: 8px;
+  padding: 1rem;
+}
+
+/* Kinesthetic Learner */
+.learning-pattern-kinesthetic {
+  --interaction-emphasis: high;
+  --button-size: 3rem;
+  --gesture-support: enabled;
+  --feedback-animation: bounce;
+}
+
+.learning-pattern-kinesthetic .interactive-element {
+  cursor: pointer;
+  user-select: none;
+  transition: all 0.1s ease;
+}
+
+.learning-pattern-kinesthetic .interactive-element:hover {
+  transform: scale(1.05);
+}
+
+.learning-pattern-kinesthetic .interactive-element:active {
+  transform: scale(0.95);
+}
+
+/* Analytical Learner */
+.learning-pattern-analytical {
+  --data-emphasis: high;
+  --detail-visibility: maximum;
+  --comparison-mode: enabled;
+}
+
+.learning-pattern-analytical .detailed-analysis {
+  font-family: 'Monaco', 'Menlo', monospace;
+  background: #1f2937;
+  color: #f3f4f6;
+  padding: 1.5rem;
+  border-radius: 8px;
+  overflow-x: auto;
+}
+
+.learning-pattern-analytical .comparison-table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+.learning-pattern-analytical .comparison-table th,
+.learning-pattern-analytical .comparison-table td {
+  border: 1px solid #e5e7eb;
+  padding: 0.75rem;
+  text-align: left;
+}
+
+/* ===== DIFFICULTY LEVEL STYLES ===== */
+
+/* Easy Difficulty */
+.difficulty-easy {
+  --pace: slow;
+  --complexity: low;
+  --guidance-level: high;
+  --feedback-frequency: immediate;
+}
+
+.difficulty-easy .content-area {
+  font-size: 1.1em;
+  line-height: 1.8;
+  letter-spacing: 0.05em;
+}
+
+.difficulty-easy .interaction-target {
+  min-height: 60px;
+  min-width: 120px;
+}
+
+.difficulty-easy .progress-indicator {
+  opacity: 1;
+  transform: scale(1.2);
+}
+
+/* Medium Difficulty */
+.difficulty-medium {
+  --pace: moderate;
+  --complexity: medium;
+  --guidance-level: moderate;
+  --feedback-frequency: periodic;
+}
+
+.difficulty-medium .content-area {
+  font-size: 1em;
+  line-height: 1.6;
+  letter-spacing: 0.02em;
+}
+
+.difficulty-medium .interaction-target {
+  min-height: 48px;
+  min-width: 96px;
+}
+
+/* Hard Difficulty */
+.difficulty-hard {
+  --pace: fast;
+  --complexity: high;
+  --guidance-level: minimal;
+  --feedback-frequency: delayed;
+}
+
+.difficulty-hard .content-area {
+  font-size: 0.9em;
+  line-height: 1.4;
+  letter-spacing: 0em;
+}
+
+.difficulty-hard .interaction-target {
+  min-height: 36px;
+  min-width: 72px;
+}
+
+.difficulty-hard .help-elements {
+  opacity: 0.3;
+}
+
+/* ===== ADAPTIVE COMPONENT STYLES ===== */
+
+/* Adaptive Container */
+.adaptive-container {
+  transition: all var(--animation-duration) var(--animation-timing);
+  position: relative;
+}
+
+.adaptive-container[data-density="spacious"] {
+  padding: calc(var(--spacing-unit) * 2);
+  gap: var(--spacing-unit);
+}
+
+.adaptive-container[data-density="balanced"] {
+  padding: var(--spacing-unit);
+  gap: calc(var(--spacing-unit) * 0.75);
+}
+
+.adaptive-container[data-density="dense"] {
+  padding: calc(var(--spacing-unit) * 0.75);
+  gap: calc(var(--spacing-unit) * 0.5);
+}
+
+.adaptive-container[data-density="compact"] {
+  padding: calc(var(--spacing-unit) * 0.5);
+  gap: calc(var(--spacing-unit) * 0.25);
+}
+
+/* Feature Discovery Animations */
+@keyframes featureDiscoveryPulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.7);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(59, 130, 246, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(59, 130, 246, 0);
+  }
+}
+
+.feature-discovery-indicator {
+  animation: featureDiscoveryPulse 2s infinite;
+}
+
+/* Progressive Disclosure */
+.progressive-disclosure .basic-content {
+  /* Base content always visible */
+}
+
+.progressive-disclosure .advanced-content {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height var(--animation-duration) var(--animation-timing);
+}
+
+.progressive-disclosure.expanded .advanced-content {
+  max-height: 1000px;
+}
+
+/* Adaptive Navigation */
+.adaptive-navigation {
+  transition: all var(--animation-duration) var(--animation-timing);
+}
+
+.adaptive-navigation .nav-item {
+  padding: calc(var(--spacing-unit) * 0.75) var(--spacing-unit);
+  border-radius: var(--border-radius);
+  margin-bottom: calc(var(--spacing-unit) * 0.25);
+}
+
+.adaptive-navigation .nav-item:hover {
+  background: var(--background-secondary);
+  transform: translateY(-1px);
+}
+
+.adaptive-navigation .nav-item.active {
+  background: var(--primary-color);
+  color: white;
+}
+
+/* Adaptive Content Recommendations */
+.recommendation-card {
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  padding: var(--spacing-unit);
+  margin-bottom: calc(var(--spacing-unit) * 0.75);
+  transition: all var(--animation-duration) var(--animation-timing);
+  cursor: pointer;
+}
+
+.recommendation-card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px);
+}
+
+.recommendation-card.priority-high {
+  border-left: 4px solid var(--error-color);
+}
+
+.recommendation-card.priority-medium {
+  border-left: 4px solid var(--warning-color);
+}
+
+.recommendation-card.priority-low {
+  border-left: 4px solid var(--success-color);
+}
+
+/* Adaptive Form */
+.adaptive-form .form-field {
+  width: 100%;
+  padding: calc(var(--spacing-unit) * 0.5);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  font-size: var(--font-size-base);
+  line-height: var(--line-height);
+  transition: all var(--animation-duration) var(--animation-timing);
+}
+
+.adaptive-form .form-field:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.adaptive-form .form-field.error {
+  border-color: var(--error-color);
+}
+
+/* Form validation messages */
+.validation-message {
+  font-size: calc(var(--font-size-base) * 0.875);
+  margin-top: calc(var(--spacing-unit) * 0.25);
+  padding: calc(var(--spacing-unit) * 0.25);
+  border-radius: calc(var(--border-radius) * 0.5);
+}
+
+.validation-message.error {
+  background: #fef2f2;
+  color: var(--error-color);
+  border: 1px solid #fecaca;
+}
+
+.validation-message.warning {
+  background: #fffbeb;
+  color: var(--warning-color);
+  border: 1px solid #fed7aa;
+}
+
+.validation-message.success {
+  background: #f0fdf4;
+  color: var(--success-color);
+  border: 1px solid #bbf7d0;
+}
+
+/* ===== RESPONSIVE ADAPTATIONS ===== */
+
+/* Mobile adaptations */
+@media (max-width: 768px) {
+  .adaptive-beginner {
+    --spacing-unit: 1.25rem;
+    --font-size-base: 1rem;
+  }
+
+  .adaptive-intermediate {
+    --spacing-unit: 1rem;
+    --font-size-base: 0.95rem;
+  }
+
+  .adaptive-advanced {
+    --spacing-unit: 0.875rem;
+    --font-size-base: 0.9rem;
+  }
+
+  .adaptive-expert {
+    --spacing-unit: 0.75rem;
+    --font-size-base: 0.85rem;
+  }
+
+  /* Touch-friendly targets */
+  .adaptive-container .touch-target {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  /* Simplified navigation on mobile */
+  .adaptive-navigation .nav-item {
+    padding: 1rem;
+    margin-bottom: 0.5rem;
+  }
+}
+
+/* Tablet adaptations */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .adaptive-beginner {
+    --spacing-unit: 1.375rem;
+  }
+
+  .adaptive-intermediate {
+    --spacing-unit: 1.125rem;
+  }
+
+  .adaptive-advanced {
+    --spacing-unit: 0.875rem;
+  }
+
+  .adaptive-expert {
+    --spacing-unit: 0.625rem;
+  }
+}
+
+/* Desktop adaptations */
+@media (min-width: 1025px) {
+  /* Use standard spacing units defined for each experience level */
+}
+
+/* ===== ACCESSIBILITY ENHANCEMENTS ===== */
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .adaptive-container {
+    border-width: 2px;
+  }
+
+  .adaptive-navigation .nav-item {
+    border-width: 2px;
+  }
+
+  .form-field {
+    border-width: 2px;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .adaptive-container,
+  .adaptive-navigation,
+  .recommendation-card,
+  .form-field {
+    transition: none;
+    animation: none;
+  }
+
+  .feature-discovery-indicator {
+    animation: none;
+    border: 2px solid var(--primary-color);
+  }
+}
+
+/* Focus visible improvements */
+.adaptive-container:focus-within,
+.adaptive-navigation .nav-item:focus-visible,
+.form-field:focus-visible {
+  outline: 2px solid var(--primary-color);
+  outline-offset: 2px;
+}
+
+/* ===== UTILITY CLASSES ===== */
+
+/* Experience level utilities */
+.exp-beginner-spacing {
+  padding: 1.5rem;
+  gap: 1.5rem;
+}
+
+.exp-intermediate-spacing {
+  padding: 1.25rem;
+  gap: 1.25rem;
+}
+
+.exp-advanced-spacing {
+  padding: 1rem;
+  gap: 1rem;
+}
+
+.exp-expert-spacing {
+  padding: 0.75rem;
+  gap: 0.75rem;
+}
+
+/* Learning pattern utilities */
+.visual-emphasis {
+  border: 2px solid var(--primary-color);
+  background: var(--background-secondary);
+}
+
+.audio-emphasis {
+  background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+  color: white;
+}
+
+.interaction-emphasis {
+  cursor: pointer;
+  user-select: none;
+}
+
+.interaction-emphasis:hover {
+  transform: scale(1.05);
+}
+
+.interaction-emphasis:active {
+  transform: scale(0.95);
+}
+
+.analytical-emphasis {
+  font-family: 'Monaco', 'Menlo', monospace;
+  background: #1f2937;
+  color: #f3f4f6;
+}
+
+/* Difficulty utilities */
+.difficulty-easy .content {
+  font-size: 1.1em;
+  line-height: 1.8;
+}
+
+.difficulty-hard .content {
+  font-size: 0.9em;
+  line-height: 1.4;
+}
+
+/* Progressive disclosure utilities */
+.progressive-basic .advanced-content {
+  display: none;
+}
+
+.progressive-expanded .advanced-content {
+  display: block;
+}
+
+/* Animation utilities */
+.animate-gentle {
+  transition: all 0.3s ease-out;
+}
+
+.animate-moderate {
+  transition: all 0.25s ease-in-out;
+}
+
+.animate-minimal {
+  transition: all 0.2s linear;
+}
+
+.animate-none {
+  transition: none;
+}
+
+/* ===== DARK MODE SUPPORT ===== */
+
+@media (prefers-color-scheme: dark) {
+  .adaptive-beginner {
+    --background-primary: #1f2937;
+    --background-secondary: #111827;
+    --background-tertiary: #374151;
+    --text-primary: #f9fafb;
+    --text-secondary: #e5e7eb;
+    --text-tertiary: #9ca3af;
+    --border-color: #374151;
+  }
+
+  .adaptive-intermediate {
+    --background-primary: #1f2937;
+    --background-secondary: #111827;
+    --background-tertiary: #374151;
+    --text-primary: #f9fafb;
+    --text-secondary: #e5e7eb;
+    --text-tertiary: #9ca3af;
+    --border-color: #4b5563;
+  }
+
+  .adaptive-advanced {
+    --background-primary: #ffffff;
+    --background-secondary: #f9fafb;
+    --background-tertiary: #f3f4f6;
+    --text-primary: #111827;
+    --text-secondary: #1f2937;
+    --text-tertiary: #6b7280;
+    --border-color: #d1d5db;
+  }
+
+  .adaptive-expert {
+    --background-primary: #000000;
+    --background-secondary: #111827;
+    --background-tertiary: #1f2937;
+    --text-primary: #ffffff;
+    --text-secondary: #d1d5db;
+    --text-tertiary: #9ca3af;
+    --border-color: #374151;
+  }
+
+  /* Dark mode specific adjustments */
+  .recommendation-card {
+    background: var(--background-secondary);
+    border-color: var(--border-color);
+  }
+
+  .form-field {
+    background: var(--background-secondary);
+    color: var(--text-primary);
+  }
+}

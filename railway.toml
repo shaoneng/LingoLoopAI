@@ -1,0 +1,22 @@
+[build]
+command = "npm install && npm run build"
+
+[deploy]
+startCommand = "npm start"
+
+[env]
+NODE_ENV = "production"
+PORT = "3000"
+
+# 自动重启策略
+[processes]
+web = "npm start"
+worker = "npm run worker"
+
+[health]
+path = "/api/health"
+timeout = "30s"
+interval = "10s"
+
+[metrics]
+enabled = true

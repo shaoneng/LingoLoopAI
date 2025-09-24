@@ -1,0 +1,722 @@
+/**
+ * Progressive Feature Unlocking System Styles
+ * Manages visual styling for feature unlocking components
+ */
+
+/* ===== FEATURE CARD STYLES ===== */
+
+.feature-card {
+  position: relative;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border-radius: 1rem;
+  overflow: hidden;
+}
+
+.feature-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, var(--tw-gradient-from) 0%, var(--tw-gradient-to) 100%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.feature-card:hover::before {
+  opacity: 0.05;
+}
+
+.feature-card.unlocked {
+  border-color: rgb(59 130 246);
+  background: linear-gradient(135deg, rgb(239 246 255) 0%, rgb(219 234 254) 100%);
+}
+
+.feature-card.enabled {
+  border-color: rgb(34 197 94);
+  background: linear-gradient(135deg, rgb(240 253 244) 0%, rgb(220 252 231) 100%);
+}
+
+.feature-card.in-progress {
+  border-color: rgb(251 191 36);
+  background: linear-gradient(135deg, rgb(254 252 232) 0%, rgb(253 230 138) 100%);
+}
+
+.feature-card.locked {
+  border-color: rgb(156 163 175);
+  background: linear-gradient(135deg, rgb(249 250 251) 0%, rgb(243 244 246) 100%);
+}
+
+/* Progress Bar Styles */
+.feature-progress-bar {
+  position: relative;
+  height: 0.5rem;
+  background: rgb(229 231 235);
+  border-radius: 9999px;
+  overflow: hidden;
+}
+
+.feature-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, rgb(59 130 246) 0%, rgb(147 51 234) 100%);
+  border-radius: 9999px;
+  transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.feature-progress-fill::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.3) 50%, transparent 100%);
+  animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+/* Status Badge Styles */
+.feature-status-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.feature-status-badge.enabled {
+  background: rgb(34 197 94);
+  color: white;
+}
+
+.feature-status-badge.unlocked {
+  background: rgb(59 130 246);
+  color: white;
+}
+
+.feature-status-badge.in-progress {
+  background: rgb(251 191 36);
+  color: white;
+}
+
+.feature-status-badge.locked {
+  background: rgb(156 163 175);
+  color: white;
+}
+
+/* ===== FEATURE MODAL STYLES ===== */
+
+.feature-modal {
+  backdrop-filter: blur(8px);
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.feature-modal-content {
+  background: white;
+  border-radius: 1.5rem;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.feature-modal-header {
+  background: linear-gradient(135deg, rgb(249 250 251) 0%, rgb(243 244 246) 100%);
+  border-bottom: 1px solid rgb(229 231 235);
+}
+
+.feature-modal-body {
+  padding: 1.5rem;
+}
+
+.requirement-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem;
+  border-radius: 0.5rem;
+  background: rgb(249 250 251);
+  margin-bottom: 0.5rem;
+  transition: all 0.2s ease;
+}
+
+.requirement-item:hover {
+  background: rgb(243 244 246);
+}
+
+.requirement-item.completed {
+  background: rgb(240 253 244);
+  border: 1px solid rgb(220 252 231);
+}
+
+.requirement-indicator {
+  width: 1rem;
+  height: 1rem;
+  border-radius: 50%;
+  background: rgb(156 163 175);
+  margin-right: 0.75rem;
+  flex-shrink: 0;
+}
+
+.requirement-item.completed .requirement-indicator {
+  background: rgb(34 197 94);
+}
+
+.requirement-progress-bar {
+  width: 8rem;
+  height: 0.5rem;
+  background: rgb(229 231 235);
+  border-radius: 9999px;
+  overflow: hidden;
+  margin-right: 0.5rem;
+}
+
+.requirement-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, rgb(59 130 246) 0%, rgb(147 51 234) 100%);
+  border-radius: 9999px;
+  transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ===== FEATURE ROADMAP STYLES ===== */
+
+.roadmap-container {
+  background: linear-gradient(135deg, rgb(249 250 251) 0%, rgb(243 244 246) 100%);
+  border-radius: 2rem;
+  padding: 2rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.roadmap-container::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  right: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(59, 130, 246, 0.1) 0%, transparent 70%);
+  animation: pulse 4s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.5;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 0.3;
+  }
+}
+
+.roadmap-progress-line {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 0.25rem;
+  background: linear-gradient(90deg, rgb(34 197 94) 0%, rgb(59 130 246) 25%, rgb(147 51 234) 50%, rgb(251 191 36) 75%, rgb(239 68 68) 100%);
+  transform: translateY(-50%);
+  border-radius: 9999px;
+}
+
+.roadmap-level-node {
+  position: relative;
+  z-index: 10;
+}
+
+.roadmap-level-icon {
+  width: 4rem;
+  height: 4rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: white;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.roadmap-level-icon:hover {
+  transform: scale(1.1);
+  box-shadow: 0 20px 35px -5px rgba(0, 0, 0, 0.3);
+}
+
+.roadmap-level-icon.level-0 {
+  background: linear-gradient(135deg, rgb(107 114 128) 0%, rgb(75 85 99) 100%);
+}
+
+.roadmap-level-icon.level-1 {
+  background: linear-gradient(135deg, rgb(34 197 94) 0%, rgb(22 163 74) 100%);
+}
+
+.roadmap-level-icon.level-2 {
+  background: linear-gradient(135deg, rgb(59 130 246) 0%, rgb(37 99 235) 100%);
+}
+
+.roadmap-level-icon.level-3 {
+  background: linear-gradient(135deg, rgb(147 51 234) 0%, rgb(124 58 237) 100%);
+}
+
+.roadmap-level-icon.level-4 {
+  background: linear-gradient(135deg, rgb(251 191 36) 0%, rgb(245 158 11) 100%);
+}
+
+.roadmap-level-icon.level-special {
+  background: linear-gradient(135deg, rgb(236 72 153) 0%, rgb(219 39 119) 100%);
+}
+
+.roadmap-level-icon.level-premium {
+  background: linear-gradient(135deg, rgb(250 204 21) 0%, rgb(234 179 8) 100%);
+}
+
+.roadmap-progress-indicator {
+  position: absolute;
+  top: -0.5rem;
+  right: -0.5rem;
+  width: 1.5rem;
+  height: 1.5rem;
+  background: rgb(59 130 246);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: bold;
+  color: white;
+  border: 2px solid white;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* ===== UNLOCK NOTIFICATION STYLES ===== */
+
+.unlock-notification {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  z-index: 50;
+  max-width: 24rem;
+}
+
+.unlock-notification-content {
+  background: linear-gradient(135deg, rgb(59 130 246) 0%, rgb(147 51 234) 100%);
+  border-radius: 1rem;
+  padding: 1.5rem;
+  color: white;
+  box-shadow: 0 20px 35px -5px rgba(0, 0, 0, 0.3);
+  position: relative;
+  overflow: hidden;
+}
+
+.unlock-notification-content.achievement {
+  background: linear-gradient(135deg, rgb(251 191 36) 0%, rgb(245 158 11) 100%);
+}
+
+.unlock-notification-content::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
+  pointer-events: none;
+}
+
+.unlock-notification-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.unlock-notification-title {
+  font-size: 1.125rem;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.unlock-notification-icon {
+  width: 3rem;
+  height: 3rem;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  flex-shrink: 0;
+}
+
+.unlock-notification-body {
+  margin-bottom: 1rem;
+}
+
+.unlock-notification-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.unlock-notification-button {
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.unlock-notification-button:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+/* Sparkle Effects */
+.sparkle {
+  position: absolute;
+  width: 0.5rem;
+  height: 0.5rem;
+  background: white;
+  border-radius: 50%;
+  animation: sparkle-ping 2s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
+.sparkle-1 {
+  top: -0.5rem;
+  right: -0.5rem;
+  animation-delay: 0s;
+}
+
+.sparkle-2 {
+  bottom: -0.5rem;
+  left: -0.5rem;
+  animation-delay: 0.3s;
+}
+
+.sparkle-3 {
+  top: 1rem;
+  right: -1rem;
+  animation-delay: 0.7s;
+}
+
+@keyframes sparkle-ping {
+  0% {
+    transform: scale(0);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(2);
+    opacity: 0;
+  }
+}
+
+/* ===== CATEGORY FILTER STYLES ===== */
+
+.category-filter {
+  display: flex;
+  gap: 0.5rem;
+  padding: 0.5rem;
+  background: white;
+  border-radius: 0.75rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  overflow-x: auto;
+}
+
+.category-filter-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  white-space: nowrap;
+  transition: all 0.2s ease;
+  border: none;
+  cursor: pointer;
+}
+
+.category-filter-button.active {
+  background: rgb(59 130 246);
+  color: white;
+}
+
+.category-filter-button:not(.active) {
+  background: rgb(249 250 251);
+  color: rgb(55 65 81);
+}
+
+.category-filter-button:not(.active):hover {
+  background: rgb(243 244 246);
+}
+
+/* ===== PROGRESS SUMMARY STYLES ===== */
+
+.progress-summary {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.progress-summary-card {
+  background: white;
+  border-radius: 1rem;
+  padding: 1.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s ease;
+}
+
+.progress-summary-card:hover {
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+.progress-summary-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.progress-summary-title {
+  font-size: 0.875rem;
+  color: rgb(107 114 128);
+  font-weight: 500;
+}
+
+.progress-summary-value {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: rgb(17 24 39);
+}
+
+.progress-summary-icon {
+  width: 3rem;
+  height: 3rem;
+  border-radius: 0.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+}
+
+.progress-summary-progress {
+  margin-top: 1rem;
+}
+
+.progress-summary-progress-bar {
+  width: 100%;
+  height: 0.5rem;
+  background: rgb(229 231 235);
+  border-radius: 9999px;
+  overflow: hidden;
+}
+
+.progress-summary-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, rgb(59 130 246) 0%, rgb(147 51 234) 100%);
+  border-radius: 9999px;
+  transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.progress-summary-label {
+  font-size: 0.75rem;
+  color: rgb(107 114 128);
+  margin-top: 0.25rem;
+}
+
+/* ===== SUGGESTION STYLES ===== */
+
+.suggestion-card {
+  background: rgb(254 252 232);
+  border: 1px solid rgb(253 230 138);
+  border-radius: 0.75rem;
+  padding: 1rem;
+  transition: all 0.2s ease;
+}
+
+.suggestion-card:hover {
+  background: rgb(253 249 195);
+  border-color: rgb(252 211 77);
+}
+
+.suggestion-title {
+  font-weight: 600;
+  color: rgb(55 65 81);
+  margin-bottom: 0.25rem;
+}
+
+.suggestion-description {
+  font-size: 0.875rem;
+  color: rgb(107 114 128);
+  margin-bottom: 0.5rem;
+}
+
+.suggestion-next-step {
+  font-size: 0.75rem;
+  color: rgb(146 64 14);
+}
+
+/* ===== RESPONSIVE STYLES ===== */
+
+@media (max-width: 768px) {
+  .feature-modal-content {
+    margin: 1rem;
+    max-height: calc(100vh - 2rem);
+  }
+
+  .unlock-notification {
+    bottom: 1rem;
+    right: 1rem;
+    left: 1rem;
+    max-width: none;
+  }
+
+  .progress-summary {
+    grid-template-columns: 1fr;
+  }
+
+  .category-filter {
+    padding: 0.25rem;
+  }
+
+  .category-filter-button {
+    padding: 0.375rem 0.75rem;
+    font-size: 0.75rem;
+  }
+
+  .roadmap-level-icon {
+    width: 3rem;
+    height: 3rem;
+    font-size: 1.25rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .feature-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .roadmap-container {
+    padding: 1rem;
+  }
+
+  .roadmap-level-node {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .roadmap-level-info {
+    text-align: center;
+    max-width: none;
+  }
+}
+
+/* ===== DARK MODE SUPPORT ===== */
+
+@media (prefers-color-scheme: dark) {
+  .feature-card {
+    background: rgb(31 41 55);
+    border-color: rgb(55 65 81);
+  }
+
+  .feature-card:hover {
+    background: rgb(55 65 81);
+  }
+
+  .feature-modal-content {
+    background: rgb(17 24 39);
+    color: white;
+  }
+
+  .feature-modal-header {
+    background: rgb(31 41 55);
+    border-bottom-color: rgb(55 65 81);
+  }
+
+  .requirement-item {
+    background: rgb(31 41 55);
+  }
+
+  .requirement-item:hover {
+    background: rgb(55 65 81);
+  }
+
+  .progress-summary-card {
+    background: rgb(31 41 55);
+    color: white;
+  }
+
+  .progress-summary-title {
+    color: rgb(156 163 175);
+  }
+
+  .progress-summary-value {
+    color: white;
+  }
+
+  .category-filter-button:not(.active) {
+    background: rgb(31 41 55);
+    color: rgb(209 213 219);
+  }
+
+  .category-filter-button:not(.active):hover {
+    background: rgb(55 65 81);
+  }
+
+  .roadmap-container {
+    background: rgb(31 41 55);
+  }
+}
+
+/* ===== ACCESSIBILITY ENHANCEMENTS ===== */
+
+.feature-card:focus-within {
+  outline: 2px solid rgb(59 130 246);
+  outline-offset: 2px;
+}
+
+.category-filter-button:focus {
+  outline: 2px solid rgb(59 130 246);
+  outline-offset: 2px;
+}
+
+.unlock-notification-button:focus {
+  outline: 2px solid white;
+  outline-offset: 2px;
+}
+
+/* Reduce motion support */
+@media (prefers-reduced-motion: reduce) {
+  .feature-card,
+  .feature-progress-fill,
+  .requirement-item,
+  .roadmap-level-icon,
+  .unlock-notification-content,
+  .sparkle,
+  .progress-summary-progress-fill {
+    animation: none;
+    transition: none;
+  }
+}

@@ -1,0 +1,28 @@
+# Cloudflare Pages 配置
+name: lingoloop-frontend
+
+# 构建设置
+build:
+  command: npm run build
+  publish: .next
+
+# 环境变量
+env:
+  NODE_ENV: production
+
+# 构建输出目录
+output_dir: .next
+
+# 重写规则
+routes:
+  # API 代理到后端
+  - pattern: "/api/*"
+    destination: "https://your-api-backend.com/api/:splat"
+
+  # 静态文件
+  - pattern: "/_next/static/*"
+    destination: "/_next/static/:splat"
+
+  # 其他路由重写到 index.html
+  - pattern: "/*"
+    destination: "/index.html"
