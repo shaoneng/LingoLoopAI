@@ -117,3 +117,9 @@ Thumbs.db
 
 # Prisma
 /lib/generated/prisma
+# secrets
+gen-lang-client-*.json
+.env
+.env.*
+*.pem
+*.key
