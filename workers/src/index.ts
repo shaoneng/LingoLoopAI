@@ -1,63 +1,48 @@
-// Cloudflare Workers API 主入口
-import { PrismaClient } from '@prisma/client';
 import { Hono } from 'hono';
-
-// 路由导入
+import { corsMiddleware } from './middleware/cors';
+import { errorHandler } from './middleware/error';
 import authRoutes from './routes/auth';
 import audioRoutes from './routes/audios';
 import userRoutes from './routes/users';
 import adminRoutes from './routes/admin';
+import type { AppEnv } from './types';
+import { getPrisma } from './lib/prisma';
 
-// 中间件导入
-import { corsMiddleware } from './middleware/cors';
-import { authMiddleware } from './middleware/auth';
-import { errorHandler } from './middleware/error';
+const app = new Hono<AppEnv>();
 
-const app = new Hono();
-
-// 初始化 Prisma
-const prisma = new PrismaClient({
-  datasources: {
-    db: {
-      url: env.DATABASE_URL,
-    },
-  },
-});
-
-// 全局中间件
-app.use('*', corsMiddleware);
 app.use('*', errorHandler);
+app.use('*', corsMiddleware);
 
-// 健康检查
-app.get('/health', (c) => {
-  return c.json({ status: 'healthy', timestamp: new Date().toISOString() });
+app.get('/api/health', async (c) => {
+  const startedAt = Date.now();
+  let dbStatus: 'ok' | 'error' = 'ok';
+  let dbError: string | null = null;
+  try {
+    const prisma = getPrisma(c.env);
+    await prisma.$queryRaw`SELECT 1`;
+  } catch (error) {
+    dbStatus = 'error';
+    dbError = error instanceof Error ? error.message : 'Unknown error';
+  }
+  const status = dbStatus === 'ok' ? 'ok' : 'degraded';
+  return c.json({
+    status,
+    services: {
+      database: {
+        status: dbStatus,
+        error: dbError,
+      },
+    },
+    timestamp: new Date().toISOString(),
+    responseTimeMs: Date.now() - startedAt,
+  }, dbStatus === 'ok' ? 200 : 503);
 });
 
-// API 路由
 app.route('/api/auth', authRoutes);
 app.route('/api/audios', audioRoutes);
 app.route('/api/users', userRoutes);
 app.route('/api/admin', adminRoutes);
 
-// 404 处理
-app.all('*', (c) => {
-  return c.json({ error: 'Not Found' }, 404);
-});
+app.notFound((c) => c.json({ error: 'Not Found' }, 404));
 
-export default {
-  async fetch(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
-    return app.fetch(request, env, ctx);
-  },
-};
-
-// 环境变量类型
-type Env = {
-  DATABASE_URL: string;
-  AUTH_JWT_SECRET: string;
-  GCS_BUCKET: string;
-  GOOGLE_APPLICATION_CREDENTIALS: string;
-  GCLOUD_PROJECT: string;
-  GEMINI_API_KEY: string;
-  GOOGLE_OAUTH_CLIENT_ID: string;
-  GOOGLE_OAUTH_CLIENT_SECRET: string;
-};
+export default app;

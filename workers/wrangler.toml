@@ -1,42 +1,14 @@
-# Cloudflare Workers 配置
 name = "lingoloop-api"
 main = "src/index.ts"
-compatibility_date = "2023-11-21"
+compatibility_date = "2024-07-01"
+compatibility_flags = ["nodejs_compat"]
 
-# 开发环境
-[env.development]
-vars = { NODE_ENV = "development" }
+[vars]
+CORS_ORIGIN = "*"
 
-# 生产环境
-[env.production]
-vars = { NODE_ENV = "production" }
+[[queues.producers]]
+binding = "TRANSCRIBE_QUEUE"
+queue = "lingoloop-transcribe"
 
-# 环境变量配置
-[env.production.vars]
-# 从环境变量读取敏感信息
-# 在 Cloudflare Dashboard 中配置这些变量
-
-# 数据库连接
-DATABASE_URL = "postgresql://..."
-
-# 认证配置
-AUTH_JWT_SECRET = "your-secret-key"
-
-# Google Cloud 配置
-GCS_BUCKET = "your-bucket-name"
-GOOGLE_APPLICATION_CREDENTIALS = "service-account-key"
-GCLOUD_PROJECT = "your-project-id"
-GEMINI_API_KEY = "your-gemini-api-key"
-
-# OAuth 配置
-GOOGLE_OAUTH_CLIENT_ID = "your-oauth-client-id"
-GOOGLE_OAUTH_CLIENT_SECRET = "your-oauth-client-secret"
-
-# 域名配置
-[env.production.routes]
-pattern = "api.your-domain.com/*"
-zone_name = "your-domain.com"
-
-# 自定义域名
-[env.production.custom_domains]
-"api.your-domain.com" = { zone_name = "your-domain.com" }
+[env.dev]
+vars = { CORS_ORIGIN = "http://localhost:3000" }
