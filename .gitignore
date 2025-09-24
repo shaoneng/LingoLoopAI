@@ -124,3 +124,4 @@ gen-lang-client-*.json
 *.pem
 *.key
 gen-lang-client-0344278569-ddc616cc428f.json
+gen-lang-client-*.json
