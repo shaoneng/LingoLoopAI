@@ -1,4 +1,4 @@
-import { encodeUtf8, toBase64Url, fromBase64Url, decodeUtf8 } from './base64';
+import { encodeUtf8, toBase64Url, fromBase64Url, decodeUtf8, toArrayBuffer } from './base64';
 
 export type JwtPayload = Record<string, unknown>;
 
@@ -13,8 +13,14 @@ export async function signJwt(secret: string, payload: JwtPayload, expiresInSec:
 }
 
 async function hmacSha256(secret: string, data: string): Promise<string> {
-  const key = await crypto.subtle.importKey('raw', encodeUtf8(secret), { name: 'HMAC', hash: 'SHA-256' }, false, ['sign']);
-  const signature = await crypto.subtle.sign('HMAC', key, encodeUtf8(data));
+  const key = await crypto.subtle.importKey(
+    'raw',
+    toArrayBuffer(encodeUtf8(secret)),
+    { name: 'HMAC', hash: 'SHA-256' },
+    false,
+    ['sign'],
+  );
+  const signature = await crypto.subtle.sign('HMAC', key, toArrayBuffer(encodeUtf8(data)));
   return toBase64Url(signature);
 }
 

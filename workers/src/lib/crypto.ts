@@ -1,4 +1,4 @@
-import { encodeUtf8, toBase64, toBase64Url, fromBase64 } from './base64';
+import { encodeUtf8, toBase64, toBase64Url, fromBase64, toArrayBuffer } from './base64';
 
 const PASSWORD_ITERATIONS = 100_000;
 const PASSWORD_KEYLEN = 64; // bytes
@@ -34,8 +34,18 @@ async function deriveKey(
   hash: string,
   length: number,
 ): Promise<Uint8Array> {
-  const keyMaterial = await crypto.subtle.importKey('raw', encodeUtf8(password), 'PBKDF2', false, ['deriveBits']);
-  const derivedBits = await crypto.subtle.deriveBits({ name: 'PBKDF2', salt, iterations, hash }, keyMaterial, length * 8);
+  const keyMaterial = await crypto.subtle.importKey(
+    'raw',
+    toArrayBuffer(encodeUtf8(password)),
+    'PBKDF2',
+    false,
+    ['deriveBits'],
+  );
+  const derivedBits = await crypto.subtle.deriveBits(
+    { name: 'PBKDF2', salt: toArrayBuffer(salt), iterations, hash },
+    keyMaterial,
+    length * 8,
+  );
   return new Uint8Array(derivedBits);
 }
 
@@ -54,7 +64,7 @@ export function randomBase64Url(bytes = 48): string {
 }
 
 export async function sha256(input: string): Promise<string> {
-  const digest = await crypto.subtle.digest('SHA-256', encodeUtf8(input));
+  const digest = await crypto.subtle.digest('SHA-256', toArrayBuffer(encodeUtf8(input)));
   return Array.from(new Uint8Array(digest))
     .map((byte) => byte.toString(16).padStart(2, '0'))
     .join('');

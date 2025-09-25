@@ -1,5 +1,4 @@
-import { PrismaClient } from '@prisma/client/edge';
-import { withAccelerate } from '@prisma/extension-accelerate';
+import { PrismaClient, withAccelerate } from './prismaClient';
 import type { Bindings } from '../types';
 
 const clientCache = new WeakMap<Bindings, PrismaClient>();

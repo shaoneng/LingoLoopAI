@@ -1,4 +1,5 @@
 import { Hono } from 'hono';
+import type { Prisma } from '@prisma/client/edge';
 import type { AppEnv } from '../types';
 import { getPrisma } from '../lib/prisma';
 import {
@@ -48,7 +49,7 @@ auth.post('/register', async (c) => {
 
   try {
     const passwordHash = await hashPassword(password);
-    const result = await prisma.$transaction(async (tx) => {
+    const result = await prisma.$transaction(async (tx: Prisma.TransactionClient) => {
       const user = await tx.user.create({
         data: {
           email,

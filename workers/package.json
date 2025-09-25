@@ -6,19 +6,20 @@
     "dev": "wrangler dev",
     "deploy": "wrangler deploy",
     "test": "vitest",
-    "build": "tsc"
+    "build": "tsc",
+    "openapi": "chanfana"
   },
   "dependencies": {
     "@prisma/client": "^6.16.2",
     "@prisma/extension-accelerate": "^1.0.0",
+    "chanfana": "^2.8.2",
     "hono": "^4.6.10",
-    "itty-router-openapi": "^0.8.6",
-    "worktop": "^0.8.0"
+    "zod": "^3"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20240620.0",
     "esbuild": "^0.20.2",
     "typescript": "^5.4.5",
-    "wrangler": "^3.53.1"
+    "wrangler": "^4.39.0"
   }
 }

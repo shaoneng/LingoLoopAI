@@ -35,3 +35,10 @@ export function encodeUtf8(input: string): Uint8Array {
 export function decodeUtf8(bytes: ArrayBuffer | Uint8Array): string {
   return decoder.decode(bytes);
 }
+
+export function toArrayBuffer(input: Uint8Array | ArrayBuffer): ArrayBuffer {
+  if (input instanceof ArrayBuffer) {
+    return input;
+  }
+  return input.slice().buffer;
+}
