@@ -32,7 +32,7 @@
 | ---- | ---- | ---- | ---- |
 | 1 | `brew services start postgresql@15` 或 `docker run ... postgres:15` | 启动数据库服务 | `lsof -nP -iTCP:5432 \| grep LISTEN` 确认端口监听；`pg_isready -h localhost -p 5432 -d lingoloop` 验证连接 |
 | 2 | `export DATABASE_URL=...`（如未写入 `.env`） | 确保 Prisma 能读取连接串 | `echo $DATABASE_URL` 或检查 `.env` |
-| 3 | `npx prisma generate` | 生成 Prisma Client（输出到 `lib/generated/prisma`） | 成功日志 `Generated Prisma Client ...` |
+| 3 | `npx prisma generate` | 生成 Prisma Client（默认输出到 `node_modules/.prisma/client`） | 成功日志 `Generated Prisma Client ...` |
 | 4 | `npx prisma db push` | 同步 schema，创建/更新表结构 | 若报 P1001，说明数据库未启动；成功后提示 `The Prisma schema was successfully pushed` |
 | 5 | `npm run dev` | 启动 Next.js 开发服务器 | 控制台出现 `ready - started server on ...`，访问 http://localhost:3000 |
 | 6（可选） | `node scripts/transcribe-worker.js` | 启动本地转写 Worker（消费长音频队列） | 控制台出现 `[worker] job succeeded` 等日志 |

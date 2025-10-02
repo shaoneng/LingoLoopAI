@@ -116,7 +116,8 @@ Thumbs.db
 *.bak
 
 # Prisma
-/lib/generated/prisma
+lib/generated/
+frontend/lib/generated/
 # secrets
 gen-lang-client-*.json
 .env

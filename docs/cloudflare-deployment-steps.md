@@ -91,25 +91,23 @@
   ```bash
   wrangler deploy
   ```
-- `wrangler.toml` 应配置：
+- `wrangler.toml` 示例：
   ```toml
   name = "lingoloop-api"
   main = "src/index.ts"
   compatibility_date = "2025-01-01"
 
   [vars]
-  QUEUE = "lingoloop-transcribe"
-
-  [[queues.producers]]
-  queue = "lingoloop-transcribe"
-  binding = "TRANSCRIBE_QUEUE"
+  CORS_ORIGIN = "*"
   ```
 
 验证：部署后访问 Worker 域名 `/api/health`，确认返回 `status: "ok"`。
 
 ---
 
-## 阶段 5：队列消费者部署
+## 阶段 5（可选）：队列消费者部署
+
+> 如果暂时不启用 Cloudflare Queues，可跳过本阶段并保持 `wrangler.toml` 无队列绑定；后续需要异步转写时再补齐。
 
 ### 5.1 队列创建
 - `wrangler queues create lingoloop-transcribe`
@@ -123,7 +121,7 @@
   4. 更新数据库状态、写入 `transcriptRun`、`auditLog`。
   5. 失败时记录错误并决定是否重试或发送到死信队列。
 - 部署命令：`wrangler deploy --name lingoloop-transcribe-consumer`
-- `wrangler.toml` 中需加入：
+- `wrangler.toml` 中需额外加入：
   ```toml
   [[queues.consumers]]
   queue = "lingoloop-transcribe"
@@ -139,7 +137,7 @@
 
 ### 6.1 前后端联调
 - 将 Pages 项目的 `NEXT_PUBLIC_API_BASE` 改为 Worker 自定义域名，例如 `https://api.example.com`。
-- 使用真实账号流程：注册、登录、上传音频、触发转写，观察 Queue 消费者日志。
+- 使用真实账号流程：注册、登录、上传音频。若启用队列，确认消费者日志无误。
 
 ### 6.2 自定义域名绑定
 - Pages：在 Cloudflare 仪表盘设置自定义域，更新 DNS CNAME 记录。
@@ -189,4 +187,3 @@ wrangler tail lingoloop-transcribe-consumer
 ---
 
 以上步骤完成后，即可实现基于 Cloudflare Pages + Workers + Queues 的全链路部署。若后续需要扩展（如国际化、付费策略），建议继续在 Worker 中引入 Durable Objects 或 KV/R2 存储，以满足更复杂的状态管理需求。
-

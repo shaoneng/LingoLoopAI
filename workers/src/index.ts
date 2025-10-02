@@ -18,7 +18,7 @@ app.get('/api/health', async (c) => {
   let dbStatus: 'ok' | 'error' = 'ok';
   let dbError: string | null = null;
   try {
-    const prisma = getPrisma(c.env);
+    const prisma = await getPrisma(c.env);
     await prisma.$queryRaw`SELECT 1`;
   } catch (error) {
     dbStatus = 'error';

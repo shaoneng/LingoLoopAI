@@ -40,7 +40,7 @@ auth.post('/register', async (c) => {
     return c.json({ error: '密码至少需要 8 个字符。' }, 400);
   }
 
-  const prisma = getPrisma(c.env);
+  const prisma = await getPrisma(c.env);
 
   const existing = await prisma.user.findUnique({ where: { email } });
   if (existing) {
@@ -96,7 +96,7 @@ auth.post('/login', async (c) => {
     return c.json({ error: '请输入邮箱和密码。' }, 400);
   }
 
-  const prisma = getPrisma(c.env);
+  const prisma = await getPrisma(c.env);
 
   try {
     const user = await prisma.user.findUnique({ where: { email } });
@@ -137,7 +137,7 @@ auth.post('/refresh', async (c) => {
   if (!refreshToken) {
     return c.json({ error: '缺少 refresh token。' }, 400);
   }
-  const prisma = getPrisma(c.env);
+  const prisma = await getPrisma(c.env);
   try {
     const result = await consumeRefreshToken({ prisma, token: refreshToken });
     if (!result) {
