@@ -214,7 +214,7 @@ export default function UnifiedUploadModal({
     setProgress(0);
 
     try {
-      const base = process.env.NEXT_PUBLIC_API_BASE || '';
+      const base = process.env.NEXT_PUBLIC_API_BASE || process.env.NEXT_PUBLIC_API_BASE_URL || '';
 
       // 1. Create upload session
       setStatus('创建上传会话...');
@@ -328,7 +328,7 @@ export default function UnifiedUploadModal({
     setStatus('正在启动转写...');
 
     try {
-      const base = process.env.NEXT_PUBLIC_API_BASE || '';
+      const base = process.env.NEXT_PUBLIC_API_BASE || process.env.NEXT_PUBLIC_API_BASE_URL || '';
       const transcribeResp = await fetch(`${base}/api/audios/${uploadedAudioId}/transcribe`, {
         method: 'POST',
         headers: {

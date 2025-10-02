@@ -84,7 +84,7 @@ const AnalysisPanel = React.forwardRef(function AnalysisPanel({ runId, segmentIn
     setLoading(true)
     setError('')
     try {
-      const base = process.env.NEXT_PUBLIC_API_BASE || ''
+      const base = process.env.NEXT_PUBLIC_API_BASE || process.env.NEXT_PUBLIC_API_BASE_URL || ''
       const segmentIndexToUse = segmentIndex >= 0 ? segmentIndex : 0
       const resp = await fetch(`${base}/api/runs/${runId}/segments/${segmentIndexToUse}/analysis?kinds=sentence,grammar`, {
         headers: { Authorization: `Bearer ${accessToken}` },
@@ -113,7 +113,7 @@ const AnalysisPanel = React.forwardRef(function AnalysisPanel({ runId, segmentIn
     setAnalyzing(true)
     setError('')
     try {
-      const base = process.env.NEXT_PUBLIC_API_BASE || ''
+      const base = process.env.NEXT_PUBLIC_API_BASE || process.env.NEXT_PUBLIC_API_BASE_URL || ''
       const segmentIndexToUse = segmentIndex >= 0 ? segmentIndex : 0
       const resp = await fetch(`${base}/api/runs/${runId}/segments/${segmentIndexToUse}/analysis`, {
         method: 'POST',

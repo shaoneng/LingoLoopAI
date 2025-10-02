@@ -1,6 +1,5 @@
 import React from 'react';
-
-const API_BASE = process.env.NEXT_PUBLIC_API_BASE || '';
+import { resolveApiUrl } from '../lib/api-client';
 const STORAGE_KEY = 'lingoloop.auth.v1';
 const ACCESS_REFRESH_PADDING_MS = 20_000;
 
@@ -36,7 +35,7 @@ function writeStorage(data) {
 }
 
 async function postJson(path, body) {
-  const resp = await fetch(`${API_BASE}${path}`, {
+  const resp = await fetch(resolveApiUrl(path), {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(body ?? {}),

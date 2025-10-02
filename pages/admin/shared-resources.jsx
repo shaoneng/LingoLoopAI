@@ -47,7 +47,7 @@ export default function AdminSharedResources() {
     setMessage('');
 
     try {
-      const base = process.env.NEXT_PUBLIC_API_BASE || '';
+      const base = process.env.NEXT_PUBLIC_API_BASE || process.env.NEXT_PUBLIC_API_BASE_URL || '';
 
       const response = await fetch(`${base}/api/admin/shared-resources`, {
         method: 'POST',

@@ -1,42 +1,32 @@
 # Repository Guidelines
 
 ## Project Structure & Module Organization
-- `pages/` holds Next.js routes; API handlers live under `pages/api/`, grouped by concern (e.g., `auth/`, `audios/`, `uploads/`).
-- `components/` exposes reusable React UI (currently `TranscriptPlayer`, auth scaffolding). Page-level state belongs in `pages/`.
-- `lib/` contains shared server utilities: Prisma client, auth helpers, quota/audit logic, uploads, transcription engines.
-- `docs/` stores operational references (upload flow, dashboard, audit). Keep these synced with behaviour.
-- Tests are expected under `__tests__/` mirroring the source path once a framework is added.
+- `pages/` contains Next.js routes and API handlers; UI state lives in these entry points.
+- `components/`, `contexts/`, and `hooks/` expose reusable client logic; avoid duplicating stateful code across pages.
+- `workers/` hosts the Cloudflare Worker (Hono + Prisma Edge); only `/api/auth/*` is fully migrated today.
+- `prisma/` stores the schema and migration history; run generators from the repository root.
+- `docs/` aggregates deployment and operations guides; update alongside any behaviour changes.
 
 ## Build, Test, and Development Commands
-- `npm run dev` – start Next.js with HMR; default port 3000.
-- `npm run build` – create the production bundle (prerenders pages, builds API routes).
-- `npm start` – serve the production build locally.
-- `npx prisma db push` – sync schema to the Postgres instance (`DATABASE_URL` required).
-- `npx prisma studio` – inspect/edit database data via browser UI.
+- `npm run dev` — start the Next.js app on port 3000 using the local API routes.
+- `npm run build && npm run export` — produce the static bundle consumed by Cloudflare Pages.
+- `npx prisma generate && npx prisma db push` — regenerate Prisma clients and sync schema to the configured Postgres instance.
+- `cd workers && npx wrangler dev` — emulate the Worker locally (only auth endpoints currently respond).
 
 ## Coding Style & Naming Conventions
-- JavaScript/React with 2-space indentation; semicolons follow prevailing style (currently omitted in most files).
-- Component files use PascalCase, utilities camelCase or kebab-case as appropriate.
-- Prefer functional React components with hooks; avoid class components.
-- Keep API handlers stateless; always invoke `setCors` and return explicit status codes.
-- Shared logic belongs in `lib/`; avoid duplicating Prisma access patterns in route files.
+- JavaScript/React with 2-space indentation; semicolons are typically omitted.
+- Use PascalCase for components, camelCase for helpers, and kebab-case for file names when exporting single utilities.
+- Prefer functional components with hooks; keep server logic stateless and colocate shared utilities under `lib/`.
 
 ## Testing Guidelines
-- Testing framework is not yet configured. When introduced, place suites under `__tests__/path/to/module.test.js`.
-- Target edge cases: upload quota breaches, missing auth, large-audio transcription fallback.
-- Ensure new helpers expose pure functions to simplify unit testing once tooling lands.
+- A dedicated test runner is not yet configured. When adding suites, mirror source paths under `__tests__/` and use descriptive filenames such as `transcriptRuns.test.js`.
+- Cover auth, upload quota edges, and long-audio fallbacks; document gaps inside PRs until tooling lands.
 
 ## Commit & Pull Request Guidelines
-- Use imperative commit messages (`feat:`, `fix:` patterns align with existing history).
-- PRs should summarise scope, list env or schema changes, outline manual test steps, and attach UI screenshots for visible changes.
-- Keep diffs focused; split unrelated refactors into separate PRs.
+- Follow imperative, conventional-style messages (e.g., `fix: handle GCS upload failures`).
+- PRs should explain scope, note schema or env changes, include manual test steps, and attach UI screenshots for visual updates.
 
 ## Security & Configuration Tips
-- Required env vars: `DATABASE_URL`, `AUTH_JWT_SECRET`, `GCS_BUCKET`, Google Cloud credentials (`GOOGLE_APPLICATION_CREDENTIALS`, `GCLOUD_PROJECT`).
-- Upload + transcription APIs expect valid Bearer tokens; unauthenticated requests are rejected early.
-- Signed audio playback uses short-lived V4 URLs; avoid logging full URLs in production.
-
-## Agent-Specific Instructions
-- When editing server code, guard Prisma selects with `deletedAt: null` for soft-delete support.
-- Record audit events via `recordAuditLog` when introducing new user-visible actions.
-- Update relevant docs (`docs/`) alongside code changes so operators stay informed.
+- Required secrets: `DATABASE_URL`, `DIRECT_URL`, `AUTH_JWT_SECRET`, `GCS_BUCKET`, `GCP_*`, `GEMINI_API_KEY`, and `CORS_ORIGIN` for Worker deployments.
+- Avoid committing service-account JSON; store private keys in Cloudflare Secrets or local `.env` files excluded from git.
+- Soft-delete support relies on `deletedAt` checks; enforce this guard when extending Prisma queries.

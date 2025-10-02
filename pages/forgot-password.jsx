@@ -2,7 +2,7 @@ import React from 'react';
 import Link from 'next/link';
 import AuthLayout from '../components/AuthLayout';
 
-const API_BASE = process.env.NEXT_PUBLIC_API_BASE || '';
+const API_BASE = process.env.NEXT_PUBLIC_API_BASE || process.env.NEXT_PUBLIC_API_BASE_URL || '';
 
 export default function ForgotPasswordPage() {
   const [email, setEmail] = React.useState('');

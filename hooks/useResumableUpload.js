@@ -198,7 +198,7 @@ export const useResumableUpload = (options = {}) => {
       setStatus('准备上传...');
       setProgress(0);
 
-      const base = process.env.NEXT_PUBLIC_API_BASE || '';
+      const base = process.env.NEXT_PUBLIC_API_BASE || process.env.NEXT_PUBLIC_API_BASE_URL || '';
 
       // 1. Create upload session
       setStatus('创建上传会话...');
@@ -333,7 +333,7 @@ export const useResumableUpload = (options = {}) => {
       setUploadState(UPLOAD_STATES.TRANSCRIBING);
       setStatus('正在启动转写...');
 
-      const base = process.env.NEXT_PUBLIC_API_BASE || '';
+      const base = process.env.NEXT_PUBLIC_API_BASE || process.env.NEXT_PUBLIC_API_BASE_URL || '';
       const transcribeResp = await fetch(`${base}/api/audios/${uploadedAudioId}/transcribe`, {
         method: 'POST',
         headers: {

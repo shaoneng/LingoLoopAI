@@ -32,7 +32,7 @@ export default function RevisionsPanel({ runId, baseText = '', baseSegments = []
     setLoading(true);
     setError('');
     try {
-      const base = process.env.NEXT_PUBLIC_API_BASE || '';
+      const base = process.env.NEXT_PUBLIC_API_BASE || process.env.NEXT_PUBLIC_API_BASE_URL || '';
       const resp = await fetch(`${base}/api/runs/${runId}/revisions`, {
         headers: { Authorization: `Bearer ${accessToken}` },
       });
@@ -64,7 +64,7 @@ export default function RevisionsPanel({ runId, baseText = '', baseSegments = []
     if (!runId || !newText.trim() || !accessToken) return;
     setCreating(true);
     try {
-      const base = process.env.NEXT_PUBLIC_API_BASE || '';
+      const base = process.env.NEXT_PUBLIC_API_BASE || process.env.NEXT_PUBLIC_API_BASE_URL || '';
       const resp = await fetch(`${base}/api/runs/${runId}/revisions`, {
         method: 'POST',
         headers: {
@@ -96,7 +96,7 @@ export default function RevisionsPanel({ runId, baseText = '', baseSegments = []
     if (!activeRevisionId || !accessToken) return;
     setSaving(true);
     try {
-      const base = process.env.NEXT_PUBLIC_API_BASE || '';
+      const base = process.env.NEXT_PUBLIC_API_BASE || process.env.NEXT_PUBLIC_API_BASE_URL || '';
       const resp = await fetch(`${base}/api/revisions/${activeRevisionId}`, {
         method: 'PATCH',
         headers: {
@@ -119,7 +119,7 @@ export default function RevisionsPanel({ runId, baseText = '', baseSegments = []
     if (!accessToken || !id) return;
     if (!window.confirm('确认删除该修订？')) return;
     try {
-      const base = process.env.NEXT_PUBLIC_API_BASE || '';
+      const base = process.env.NEXT_PUBLIC_API_BASE || process.env.NEXT_PUBLIC_API_BASE_URL || '';
       const resp = await fetch(`${base}/api/revisions/${id}`, {
         method: 'DELETE',
         headers: { Authorization: `Bearer ${accessToken}` },

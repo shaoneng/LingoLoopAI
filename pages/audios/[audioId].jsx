@@ -44,7 +44,7 @@ export default function AudioDetailPage() {
       setLoading(true);
       setError('');
       try {
-        const base = process.env.NEXT_PUBLIC_API_BASE || '';
+        const base = process.env.NEXT_PUBLIC_API_BASE || process.env.NEXT_PUBLIC_API_BASE_URL || '';
         const resp = await fetch(`${base}/api/audios/${audioId}`, {
           headers: { Authorization: `Bearer ${accessToken}` },
         });
@@ -69,7 +69,7 @@ export default function AudioDetailPage() {
     const fetchSignedUrl = async () => {
       setSigning(true);
       try {
-        const base = process.env.NEXT_PUBLIC_API_BASE || '';
+        const base = process.env.NEXT_PUBLIC_API_BASE || process.env.NEXT_PUBLIC_API_BASE_URL || '';
         const resp = await fetch(`${base}/api/audios/${data.audio.id}/download`, {
           headers: { Authorization: `Bearer ${accessToken}` },
         });
@@ -106,7 +106,7 @@ export default function AudioDetailPage() {
     const load = async () => {
       setOverviewLoading(true);
       try {
-        const base = process.env.NEXT_PUBLIC_API_BASE || '';
+        const base = process.env.NEXT_PUBLIC_API_BASE || process.env.NEXT_PUBLIC_API_BASE_URL || '';
         // 先尝试 GET
         let resp = await fetch(`${base}/api/runs/${runId}/analysis`, {
           headers: { Authorization: `Bearer ${accessToken}` },
@@ -144,7 +144,7 @@ export default function AudioDetailPage() {
       return;
     }
 
-    const base = process.env.NEXT_PUBLIC_API_BASE || '';
+    const base = process.env.NEXT_PUBLIC_API_BASE || process.env.NEXT_PUBLIC_API_BASE_URL || '';
     const url = `${base}/api/runs/${latestRun.id}/status`;
     const es = new EventSource(url, { withCredentials: true });
 
@@ -207,7 +207,7 @@ export default function AudioDetailPage() {
     if (!data?.audio?.id || !accessToken) return;
     setTranscribing(true);
     try {
-      const base = process.env.NEXT_PUBLIC_API_BASE || '';
+      const base = process.env.NEXT_PUBLIC_API_BASE || process.env.NEXT_PUBLIC_API_BASE_URL || '';
       const resp = await fetch(`${base}/api/audios/${data.audio.id}/transcribe`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${accessToken}` },

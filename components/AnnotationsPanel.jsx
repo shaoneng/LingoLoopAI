@@ -25,7 +25,7 @@ export default function AnnotationsPanel({ runId }) {
     setLoading(true);
     setError('');
     try {
-      const base = process.env.NEXT_PUBLIC_API_BASE || '';
+      const base = process.env.NEXT_PUBLIC_API_BASE || process.env.NEXT_PUBLIC_API_BASE_URL || '';
       const resp = await fetch(`${base}/api/runs/${runId}/annotations`, {
         headers: { Authorization: `Bearer ${accessToken}` },
       });
@@ -47,7 +47,7 @@ export default function AnnotationsPanel({ runId }) {
     if (!runId || !content || !anchorValue || !accessToken) return;
     setSubmitting(true);
     try {
-      const base = process.env.NEXT_PUBLIC_API_BASE || '';
+      const base = process.env.NEXT_PUBLIC_API_BASE || process.env.NEXT_PUBLIC_API_BASE_URL || '';
       const resp = await fetch(`${base}/api/runs/${runId}/annotations`, {
         method: 'POST',
         headers: {
@@ -72,7 +72,7 @@ export default function AnnotationsPanel({ runId }) {
     if (!accessToken || !id) return;
     if (!window.confirm('确认删除该注释？')) return;
     try {
-      const base = process.env.NEXT_PUBLIC_API_BASE || '';
+      const base = process.env.NEXT_PUBLIC_API_BASE || process.env.NEXT_PUBLIC_API_BASE_URL || '';
       const resp = await fetch(`${base}/api/annotations/${id}`, {
         method: 'DELETE',
         headers: { Authorization: `Bearer ${accessToken}` },

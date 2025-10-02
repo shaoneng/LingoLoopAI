@@ -57,7 +57,7 @@ export default function AdminShareToBBC() {
   const loadSharedResources = React.useCallback(async () => {
     if (!accessToken) return;
     try {
-      const base = process.env.NEXT_PUBLIC_API_BASE || '';
+      const base = process.env.NEXT_PUBLIC_API_BASE || process.env.NEXT_PUBLIC_API_BASE_URL || '';
       const resp = await fetch(`${base}/api/admin/shared-resources`, {
         headers: { Authorization: `Bearer ${accessToken}` },
       });
@@ -77,7 +77,7 @@ export default function AdminShareToBBC() {
     setLoading(true);
     setError('');
     try {
-      const base = process.env.NEXT_PUBLIC_API_BASE || '';
+      const base = process.env.NEXT_PUBLIC_API_BASE || process.env.NEXT_PUBLIC_API_BASE_URL || '';
       const params = new URLSearchParams({ page: String(nextPage) });
       if (q) params.set('q', q);
       const resp = await fetch(`${base}/api/audios?${params.toString()}`, {
@@ -128,7 +128,7 @@ export default function AdminShareToBBC() {
   // 订阅实时状态更新
   React.useEffect(() => {
     if (!user || !accessToken) return undefined;
-    const base = process.env.NEXT_PUBLIC_API_BASE || '';
+    const base = process.env.NEXT_PUBLIC_API_BASE || process.env.NEXT_PUBLIC_API_BASE_URL || '';
     const url = `${base}/api/runs/events?access_token=${encodeURIComponent(accessToken)}`;
     let es;
     try {
@@ -196,7 +196,7 @@ export default function AdminShareToBBC() {
 
     setSharing(selectedAudio.id);
     try {
-      const base = process.env.NEXT_PUBLIC_API_BASE || '';
+      const base = process.env.NEXT_PUBLIC_API_BASE || process.env.NEXT_PUBLIC_API_BASE_URL || '';
       const resp = await fetch(`${base}/api/admin/share-to-bbc`, {
         method: 'POST',
         headers: {

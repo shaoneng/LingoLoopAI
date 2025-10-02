@@ -139,7 +139,7 @@ export default function AudioUploadModal({
     setStatus('准备上传...');
 
     try {
-      const base = process.env.NEXT_PUBLIC_API_BASE || '';
+      const base = process.env.NEXT_PUBLIC_API_BASE || process.env.NEXT_PUBLIC_API_BASE_URL || '';
 
       // 1. 创建上传会话
       setStatus('创建上传会话...');

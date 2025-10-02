@@ -1,4 +1,5 @@
 import React from 'react';
+import { persistAuthSession, readJson, resolveApiUrl } from '../lib/api-client';
 
 export default function RegisterPage() {
   const [formData, setFormData] = React.useState({
@@ -34,7 +35,7 @@ export default function RegisterPage() {
     setLoading(true);
 
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/auth/register`, {
+      const response = await fetch(resolveApiUrl('/api/auth/register'), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -46,17 +47,22 @@ export default function RegisterPage() {
         }),
       });
 
-      const result = await response.json();
+      const result = await readJson(response);
 
-      if (result.success) {
-        localStorage.setItem('accessToken', result.data.accessToken);
-        localStorage.setItem('user', JSON.stringify(result.data.user));
-        window.location.href = '/';
-      } else {
-        setError(result.error || '注册失败');
+      if (!response.ok) {
+        setError(result?.error || `注册失败（${response.status}）`);
+        return;
       }
+
+      if (!result?.accessToken || !result?.user) {
+        setError('注册响应异常，请稍后重试');
+        return;
+      }
+
+      persistAuthSession(result);
+      window.location.href = '/';
     } catch (err) {
-      setError('网络错误，请稍后再试');
+      setError(err?.message || '网络错误，请稍后再试');
     } finally {
       setLoading(false);
     }

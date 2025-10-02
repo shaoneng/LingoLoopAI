@@ -235,7 +235,7 @@ export default function UserDashboard() {
       params.set('pageSize', '10');
       if (query) params.set('q', query);
 
-      const baseUrl = process.env.NEXT_PUBLIC_API_BASE || '';
+      const baseUrl = process.env.NEXT_PUBLIC_API_BASE || process.env.NEXT_PUBLIC_API_BASE_URL || '';
       const url = baseUrl ? `${baseUrl}/api/audios?${params.toString()}` : `/api/audios?${params.toString()}`;
 
       const response = await fetch(url, {
@@ -307,7 +307,7 @@ export default function UserDashboard() {
 
     try {
       setLoading(true);
-      const base = process.env.NEXT_PUBLIC_API_BASE || '';
+      const base = process.env.NEXT_PUBLIC_API_BASE || process.env.NEXT_PUBLIC_API_BASE_URL || '';
       const response = await fetch(`${base}/api/audios/${audioId}/transcribe`, {
         method: 'POST',
         headers: {

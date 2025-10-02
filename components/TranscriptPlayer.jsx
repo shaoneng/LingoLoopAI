@@ -699,7 +699,7 @@ export default function TranscriptPlayer({ audioRef, segments, onActiveChange, r
     }
 
     setTranslating(true);
-    const base = process.env.NEXT_PUBLIC_API_BASE || '';
+    const base = process.env.NEXT_PUBLIC_API_BASE || process.env.NEXT_PUBLIC_API_BASE_URL || '';
     let successCount = 0;
     let failCount = 0;
 

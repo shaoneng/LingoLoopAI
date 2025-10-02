@@ -17,7 +17,7 @@ export default function PaginatedTranscript({ runId, audioRef, onActiveSegmentCh
       setLoading(true);
       setError('');
       try {
-        const base = process.env.NEXT_PUBLIC_API_BASE || '';
+        const base = process.env.NEXT_PUBLIC_API_BASE || process.env.NEXT_PUBLIC_API_BASE_URL || '';
         const params = new URLSearchParams({ limit: String(PAGE_SIZE) });
         if (cursor != null) params.set('cursor', String(cursor));
         const resp = await fetch(`${base}/api/runs/${runId}/segments?${params.toString()}`, {

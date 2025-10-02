@@ -16,7 +16,7 @@ export default function RunHistoryList({ audioId, initialRuns = [] }) {
     setLoading(true);
     setError('');
     try {
-      const base = process.env.NEXT_PUBLIC_API_BASE || '';
+      const base = process.env.NEXT_PUBLIC_API_BASE || process.env.NEXT_PUBLIC_API_BASE_URL || '';
       const params = new URLSearchParams({ limit: '10', cursor: nextCursor });
       const resp = await fetch(`${base}/api/audios/${audioId}/runs?${params.toString()}`, {
         headers: { Authorization: `Bearer ${accessToken}` },
@@ -43,7 +43,7 @@ export default function RunHistoryList({ audioId, initialRuns = [] }) {
       setLoading(true);
       setError('');
       try {
-        const base = process.env.NEXT_PUBLIC_API_BASE || '';
+        const base = process.env.NEXT_PUBLIC_API_BASE || process.env.NEXT_PUBLIC_API_BASE_URL || '';
         const resp = await fetch(`${base}/api/audios/${audioId}/runs?limit=10`, {
           headers: { Authorization: `Bearer ${accessToken}` },
         });

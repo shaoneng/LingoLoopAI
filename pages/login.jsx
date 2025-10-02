@@ -1,4 +1,5 @@
 import React from 'react';
+import { persistAuthSession, readJson, resolveApiUrl } from '../lib/api-client';
 
 export default function LoginPage() {
   const [email, setEmail] = React.useState('');
@@ -12,7 +13,7 @@ export default function LoginPage() {
     setLoading(true);
 
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/auth/login`, {
+      const response = await fetch(resolveApiUrl('/api/auth/login'), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -20,17 +21,22 @@ export default function LoginPage() {
         body: JSON.stringify({ email, password }),
       });
 
-      const result = await response.json();
+      const result = await readJson(response);
 
-      if (result.success) {
-        localStorage.setItem('accessToken', result.data.accessToken);
-        localStorage.setItem('user', JSON.stringify(result.data.user));
-        window.location.href = '/';
-      } else {
-        setError(result.error || '登录失败');
+      if (!response.ok) {
+        setError(result?.error || `登录失败（${response.status}）`);
+        return;
       }
+
+      if (!result?.accessToken || !result?.user) {
+        setError('登录响应异常，请稍后重试');
+        return;
+      }
+
+      persistAuthSession(result);
+      window.location.href = '/';
     } catch (err) {
-      setError('网络错误，请稍后再试');
+      setError(err?.message || '网络错误，请稍后再试');
     } finally {
       setLoading(false);
     }
