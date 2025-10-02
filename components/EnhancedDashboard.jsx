@@ -2,6 +2,8 @@ import React, { Suspense, lazy } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useAuth } from '../contexts/AuthContext';
+import { useRealtimeAudioFiles } from '../hooks/useRealtimeAudioFiles';
+import { useRealtime, RealtimeStatus } from '../contexts/RealtimeContext';
 import { usePerformance, useComponentPerformance } from '../hooks/usePerformance';
 import LazyImage from './performance/LazyImage';
 import PerformanceToggle from './performance/PerformanceToggle';
@@ -104,6 +106,28 @@ export default function EnhancedDashboard() {
     });
   }, [activeTab, items, loading, hasMore, search, user, accessToken]);
 
+  const { sync } = useRealtime();
+  const { items: realtimeItems, status: realtimeStatus } = useRealtimeAudioFiles();
+  const realtimeMessage = React.useMemo(() => {
+    switch (realtimeStatus) {
+      case RealtimeStatus.CONNECTING:
+        return '实时连接建立中…';
+      case RealtimeStatus.OFFLINE:
+        return '当前离线，正在使用缓存数据';
+      case RealtimeStatus.ERROR:
+        return '实时同步出现异常，已回退到缓存状态';
+      case RealtimeStatus.DISABLED:
+        return '实时同步未启用，部分更新需要手动刷新';
+      default:
+        return null;
+    }
+  }, [realtimeStatus]);
+
+  React.useEffect(() => {
+    if (search.trim()) return;
+    setItems(realtimeItems);
+  }, [realtimeItems, search]);
+
   const loadData = React.useCallback(async ({ page: pageNum, q: query }) => {
     if (!accessToken) {
       console.log('No access token available');
@@ -159,7 +183,8 @@ export default function EnhancedDashboard() {
 
   React.useEffect(() => {
     if (!user || !accessToken) return;
-    if (activeTab === 'my-audio') {
+    if (activeTab !== 'my-audio') return;
+    if (search.trim()) {
       loadData({ page: 1, q: search });
     }
   }, [user, accessToken, loadData, search, activeTab]);
@@ -175,6 +200,7 @@ export default function EnhancedDashboard() {
 
   // 加载更多
   const loadMore = () => {
+    if (!search.trim()) return;
     if (hasMore && !loading) {
       loadData({ page: page + 1, q: search });
     }
@@ -182,6 +208,7 @@ export default function EnhancedDashboard() {
 
   // 无限滚动观察器
   React.useEffect(() => {
+    if (!search.trim()) return;
     if (loading || !hasMore) return;
 
     const lastCard = document.querySelector('[data-last-card="true"]');
@@ -209,8 +236,9 @@ export default function EnhancedDashboard() {
   // 上传完成后的处理
   const handleUploadComplete = (audioId) => {
     console.log('Upload completed for audio:', audioId);
-    // 刷新音频列表
-    loadData({ page: 1, q: search });
+    // 刷新音频列表（实时缓存会自动更新）
+    sync();
+    if (search) setSearch('');
     // 可选：跳转到音频详情页
     // router.push(`/audios/${audioId}`);
   };
@@ -260,7 +288,7 @@ export default function EnhancedDashboard() {
       }
 
       // 刷新列表以显示新状态
-      loadData({ page: 1, q: search });
+      await sync();
     } catch (error) {
       setError(`转写启动失败: ${error.message}`);
     } finally {
@@ -325,6 +353,20 @@ export default function EnhancedDashboard() {
 
   return (
     <div style={{ maxWidth: 1200, margin: '0 auto', padding: '20px' }}>
+      {realtimeMessage && (
+        <div
+          style={{
+            marginBottom: 16,
+            padding: '10px 16px',
+            borderRadius: 8,
+            backgroundColor: '#fef3c7',
+            color: '#92400e',
+            fontSize: 13,
+          }}
+        >
+          {realtimeMessage}
+        </div>
+      )}
       {/* 导航栏 */}
       <nav style={{ marginBottom: 24, padding: '16px 0', borderBottom: '1px solid #e2e8f0' }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12 }}>
@@ -453,8 +495,14 @@ export default function EnhancedDashboard() {
             <h1 style={{ fontSize: 24, fontWeight: 600, margin: 0 }}>我的音频</h1>
             <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
               <button
-                onClick={() => loadData({ page: 1, q: search })}
-                disabled={loading}
+                onClick={() => {
+                  if (search.trim()) {
+                    loadData({ page: 1, q: search });
+                  } else {
+                    sync();
+                  }
+                }}
+                disabled={loading || (!search.trim() && realtimeStatus === RealtimeStatus.CONNECTING)}
                 style={{
                   padding: '10px 20px',
                   backgroundColor: '#6c757d',

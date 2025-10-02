@@ -6,6 +6,9 @@ import PaginatedTranscript from '../../components/PaginatedTranscript';
 // Removed history & revisions for now to focus on Analysis
 import AnalysisPanel from '../../components/AnalysisPanel';
 import { parseAudioFilename } from '../../lib/audioMetadata';
+import { useRealtimeAudio } from '../../hooks/useRealtimeAudioFiles';
+import { useRealtimeTranscriptRuns } from '../../hooks/useRealtimeTranscriptRuns';
+import { useRealtime } from '../../contexts/RealtimeContext';
 
 function formatDuration(ms) {
   if (!ms || Number.isNaN(ms)) return '—';
@@ -19,6 +22,9 @@ export default function AudioDetailPage() {
   const router = useRouter();
   const { audioId } = router.query;
   const { user, accessToken, initializing, logout } = useAuth();
+  const { sync } = useRealtime();
+  const realtimeAudio = useRealtimeAudio(audioId);
+  const { runs: realtimeRuns } = useRealtimeTranscriptRuns({ audioId, autoSync: true });
   const audioRef = React.useRef(null);
 
   const [loading, setLoading] = React.useState(true);
@@ -31,11 +37,15 @@ export default function AudioDetailPage() {
   const analysisRef = React.useRef(null);
   const [analyzingUi, setAnalyzingUi] = React.useState(false);
   const [listening, setListening] = React.useState(false);
-  const [reloadToken, setReloadToken] = React.useState(0);
   const [showSource, setShowSource] = React.useState(true);
   const [transcribing, setTranscribing] = React.useState(false);
   const [overviewLoading, setOverviewLoading] = React.useState(false);
   const [overview, setOverview] = React.useState(null); // { description, vocab }
+
+  React.useEffect(() => {
+    if (!audioId || !accessToken) return;
+    sync();
+  }, [audioId, accessToken, sync]);
 
   React.useEffect(() => {
     if (!audioId || !accessToken) return;
@@ -62,6 +72,41 @@ export default function AudioDetailPage() {
       cancelled = true;
     };
   }, [audioId, accessToken]);
+
+  React.useEffect(() => {
+    if (!realtimeAudio || !data?.audio) return;
+    setData((current) => {
+      if (!current?.audio) return current;
+      const currentTs = current.audio.updatedAt ? new Date(current.audio.updatedAt).getTime() : 0;
+      const incomingTs = realtimeAudio.updatedAt ? new Date(realtimeAudio.updatedAt).getTime() : 0;
+      if (incomingTs <= currentTs) {
+        return current;
+      }
+      return {
+        ...current,
+        audio: { ...current.audio, ...realtimeAudio },
+      };
+    });
+  }, [realtimeAudio, data?.audio]);
+
+  React.useEffect(() => {
+    if (!realtimeRuns?.length || !data?.audio?.id) return;
+    setData((current) => {
+      if (!current?.audio?.id) return current;
+      const nextRuns = realtimeRuns.filter((run) => run.audioId === current.audio.id);
+      if (!nextRuns.length) return current;
+      const latest = nextRuns.reduce((acc, run) => {
+        const runTs = run.updatedAt ? new Date(run.updatedAt).getTime() : 0;
+        const accTs = acc?.updatedAt ? new Date(acc.updatedAt).getTime() : 0;
+        return runTs > accTs ? run : acc;
+      }, current.latestRun || null);
+      return {
+        ...current,
+        latestRun: latest || current.latestRun,
+        recentRuns: nextRuns,
+      };
+    });
+  }, [realtimeRuns, data?.audio?.id]);
 
   React.useEffect(() => {
     if (!data?.audio?.id || !accessToken) return;
@@ -136,63 +181,11 @@ export default function AudioDetailPage() {
     return () => { cancelled = true; };
   }, [data?.latestRun?.id, accessToken]);
 
-  // Subscribe to run status via SSE when queued/processing
   React.useEffect(() => {
-    const latestRun = data?.latestRun;
-    // Only connect if there's a run in a pending state.
-    if (!latestRun?.id || !['queued', 'processing'].includes(latestRun.status)) {
-      return;
-    }
-
-    const base = process.env.NEXT_PUBLIC_API_BASE || process.env.NEXT_PUBLIC_API_BASE_URL || '';
-    const url = `${base}/api/runs/${latestRun.id}/status`;
-    const es = new EventSource(url, { withCredentials: true });
-
-    setListening(true);
-
-    es.onmessage = (event) => {
-      try {
-        const payload = JSON.parse(event.data);
-
-        if (payload.status) {
-          setData((prev) => {
-            if (!prev || !prev.latestRun) return prev;
-            return {
-              ...prev,
-              latestRun: { ...prev.latestRun, status: payload.status },
-            };
-          });
-        }
-
-        // If the job is done (completed or failed), close the connection.
-        if (payload.status === 'completed' || payload.status === 'failed') {
-          setListening(false);
-          setReloadToken((x) => x + 1); // Force a re-fetch of related data if needed
-          es.close();
-        }
-        
-        if (payload.error) {
-          console.error('SSE Error:', payload.error);
-          setListening(false);
-          es.close();
-        }
-      } catch (err) {
-        console.error('Failed to parse SSE message:', err);
-      }
-    };
-
-    es.onerror = (err) => {
-      console.error('EventSource failed:', err);
-      setListening(false);
-      es.close();
-    };
-
-    // Clean up the connection when the component unmounts or dependencies change.
-    return () => {
-      setListening(false);
-      es.close();
-    };
-  }, [data?.latestRun?.id, data?.latestRun?.status, accessToken, reloadToken]);
+    const nextStatus = data?.latestRun?.status;
+    const shouldListen = nextStatus && ['queued', 'processing'].includes(nextStatus);
+    setListening(Boolean(shouldListen));
+  }, [data?.latestRun?.status]);
 
   const handleLogout = async () => {
     setLogoutPending(true);
@@ -459,7 +452,7 @@ export default function AudioDetailPage() {
                   </div>
                 )}
                 <PaginatedTranscript
-                  key={`${latestRun.id}-${reloadToken}`}
+                  key={latestRun.id}
                   runId={latestRun.id}
                   audioRef={audioRef}
                   showSource={showSource}
