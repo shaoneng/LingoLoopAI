@@ -1,5 +1,5 @@
 import React from 'react'
-import { getSupabaseClient } from '../lib/supabase/client'
+import { loadSupabaseClient } from '../lib/supabase/client'
 import { resolveApiUrl } from '../lib/api-client'
 import { useAuth } from './AuthContext'
 
@@ -88,13 +88,33 @@ const RealtimeContext = React.createContext({
 
 export function RealtimeProvider({ children }) {
   const { accessToken } = useAuth()
-  const supabase = getSupabaseClient()
+  const [supabase, setSupabase] = React.useState(null)
+  const [status, setStatus] = React.useState(STATUS.CONNECTING)
 
-  const [status, setStatus] = React.useState(() => {
-    if (!isBrowser()) return STATUS.DISABLED
-    if (!supabase) return STATUS.DISABLED
-    return navigator.onLine ? STATUS.CONNECTING : STATUS.OFFLINE
-  })
+  React.useEffect(() => {
+    if (!isBrowser()) return
+    let active = true
+    loadSupabaseClient()
+      .then((client) => {
+        if (!active) return
+        if (!client) {
+          setStatus(STATUS.DISABLED)
+          setSupabase(null)
+          return
+        }
+        setSupabase(client)
+        setStatus(navigator.onLine ? STATUS.CONNECTING : STATUS.OFFLINE)
+      })
+      .catch((error) => {
+        if (!active) return
+        console.warn('Failed to initialise Supabase client', error)
+        setSupabase(null)
+        setStatus(STATUS.DISABLED)
+      })
+    return () => {
+      active = false
+    }
+  }, [])
 
   const audioMapRef = React.useRef(new Map())
   const runMapRef = React.useRef(new Map())
@@ -264,10 +284,7 @@ export function RealtimeProvider({ children }) {
   }, [accessToken, flushPendingMutations, refreshSnapshots])
 
   React.useEffect(() => {
-    if (!supabase) {
-      setStatus(STATUS.DISABLED)
-      return
-    }
+    if (!supabase) return
 
     const updateStatusFromNetwork = () => {
       if (!navigator.onLine) {

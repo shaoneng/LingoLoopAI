@@ -39,7 +39,7 @@
 
 ## Environment Variables
 
-- `NEXT_PUBLIC_SUPABASE_URL` / `NEXT_PUBLIC_SUPABASE_ANON_KEY`: Browser-facing Supabase credentials for realtime subscriptions.
+- `NEXT_PUBLIC_SUPABASE_URL` / `NEXT_PUBLIC_SUPABASE_ANON_KEY`: Browser-facing Supabase credentials for realtime subscriptions. The client is loaded at runtime from `https://esm.sh/@supabase/supabase-js@2.58.0?bundle`, so no local npm dependency is required.
 - `DB_POOL_MAX`, `DB_POOL_IDLE_MS`: Optional pg pool tuning for the new direct Postgres client.
 - `NEXT_PUBLIC_SUPABASE_EVENTS_PER_SEC` (optional): Overrides realtime throttle; defaults to 10.
 

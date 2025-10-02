@@ -21,9 +21,9 @@ export async function getPrisma(env: Bindings): Promise<PrismaClient> {
   if (accelerateUrl) {
     client = new PrismaClient({
       datasources: {
-        db: { url: 'prisma://accelerate' },
+        db: { url: accelerateUrl },
       },
-    }).$extends(withAccelerate({ accelerateUrl }));
+    }).$extends(withAccelerate());
   } else {
     client = new PrismaClient({
       datasources: {
