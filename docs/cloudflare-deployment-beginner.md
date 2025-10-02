@@ -140,22 +140,7 @@ npm run dev
 
 ## 七、（可选）部署队列消费者
 
-如果暂时不需要异步转写，可跳过。需要时按以下步骤启用：
-1. 创建队列：`wrangler queues create lingoloop-transcribe`
-2. 在 `workers/wrangler.toml` 中添加：
-   ```toml
-   [[queues.producers]]
-   queue = "lingoloop-transcribe"
-   binding = "TRANSCRIBE_QUEUE"
-   ```
-3. 在 Cloudflare 控制台补充相同的绑定。
-4. 部署消费者 Worker（`worker/` 目录）：
-   ```bash
-   cd ../worker
-   npm install
-   npx wrangler deploy --name lingoloop-transcribe-consumer
-   ```
-5. 验证：`wrangler tail lingoloop-transcribe-consumer` 查看队列处理日志。
+当前仓库未包含 Cloudflare Queue 消费者实现。如需异步任务，可自行创建新 Worker 并在 `workers/wrangler.toml` 中启用队列绑定（参考 `[[queues.producers]]` 配置），随后按 Cloudflare 官方文档编写消费者逻辑。
 
 ---
 

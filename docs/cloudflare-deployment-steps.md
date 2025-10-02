@@ -15,7 +15,6 @@
 ### 0.2 仓库结构确认
 - `frontend/`：负责 Cloudflare Pages 构建。关键代码：`next.config.js`、`pages/`、`components/`。
 - `workers/`：Hono API，部署到 Cloudflare Workers。关键代码：`src/index.ts`、`src/routes/**`、`lib/prisma.ts`（Edge 版本）。
-- `worker/`：队列消费者 Worker。`src/index.ts` 负责从 Cloudflare Queue 获取任务、调用 Google API。
 
 ---
 
@@ -23,7 +22,7 @@
 
 ### 1.1 本地开发
 - 复制 `.env.example` 为 `.env.cloudflare`。
-- 分别创建 `frontend/.env.local`、`workers/.dev.vars`、`worker/.dev.vars`，填入模板中对应变量。
+- 分别创建 `frontend/.env.local`、`workers/.dev.vars`，填入模板中对应变量。
 - 注意：在 Worker 环境下，`GCP_PRIVATE_KEY` 需保持单行格式，换行替换为 `\n`。
 
 ### 1.2 Cloudflare 控制台配置
@@ -31,7 +30,7 @@
 - **Workers** → `Settings > Variables`：添加 `AUTH_JWT_SECRET`、`PRISMA_ACCELERATE_URL`、`GCP_*`、`GEMINI_API_KEY`、`MAIL_*` 等。
 - **Queues**：创建队列后，在 Worker 配置中绑定 `QUEUE` 变量。
 
-验证：本地运行 `wrangler dev`（在 `workers/` 目录）与 `wrangler dev --queue-consumer`（在 `worker/` 目录），确保环境变量被正确读取。
+验证：本地运行 `wrangler dev`（在 `workers/` 目录），确保环境变量被正确读取；如未来引入队列，再针对消费者 Worker 单独校验。
 
 ---
 
@@ -107,29 +106,10 @@
 
 ## 阶段 5（可选）：队列消费者部署
 
-> 如果暂时不启用 Cloudflare Queues，可跳过本阶段并保持 `wrangler.toml` 无队列绑定；后续需要异步转写时再补齐。
-
-### 5.1 队列创建
-- `wrangler queues create lingoloop-transcribe`
-- 确认控制台可见该队列，并记录名称。
-
-### 5.2 消费者 Worker
-- `worker/src/index.ts` 应实现：
-  1. 从队列消息解析 `runId`、`audioId` 等字段。
-  2. 下载音频（通过 GCS 签名 URL）。
-  3. 调用 Google Speech-to-Text `batchRecognize`。
-  4. 更新数据库状态、写入 `transcriptRun`、`auditLog`。
-  5. 失败时记录错误并决定是否重试或发送到死信队列。
-- 部署命令：`wrangler deploy --name lingoloop-transcribe-consumer`
-- `wrangler.toml` 中需额外加入：
-  ```toml
-  [[queues.consumers]]
-  queue = "lingoloop-transcribe"
-  max_batch_size = 1
-  dead_letter_queue = "lingoloop-transcribe-dlq"
-  ```
-
-验证：向队列手动发送测试消息（`wrangler queues send`），观察消费者日志是否正确处理并更新数据库。
+当前仓库未携带 Cloudflare Queue 消费者代码。若业务需要异步转写，可：
+1. 在 Cloudflare 中创建队列（`wrangler queues create ...`），并在 `workers/wrangler.toml` 配置 `[[queues.producers]]`。
+2. 新建独立 Worker 项目作为消费者，编写从队列读取消息、调用转写服务并更新数据库的逻辑。
+3. 参考阶段 1 的做法为消费者 Worker 配置 Secrets、部署并配合 `wrangler tail` 调试。
 
 ---
 
@@ -166,13 +146,11 @@
 ```bash
 # 本地开发
 cd workers && wrangler dev
-cd worker && wrangler dev --queue-consumer
 cd frontend && npm run dev
 
 # 构建与部署
 cd frontend && npm run build && npm run export
 cd workers && wrangler deploy
-cd worker && wrangler deploy --name lingoloop-transcribe-consumer
 
 # Queue 管理
 wrangler queues create lingoloop-transcribe
@@ -181,7 +159,6 @@ wrangler queues send lingoloop-transcribe '{"runId":"..."}'
 
 # 日志查看
 wrangler tail lingoloop-api
-wrangler tail lingoloop-transcribe-consumer
 ```
 
 ---

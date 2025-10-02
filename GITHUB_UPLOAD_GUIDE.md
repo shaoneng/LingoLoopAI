@@ -54,7 +54,7 @@ LingoLoopAI/
 │   ├── admin/         # 管理页面
 │   └── ...            # 用户页面
 ├── styles/             # CSS样式文件
-├── worker/             # Cloudflare Workers后端
+├── workers/            # Cloudflare Worker API
 ├── package.json        # 项目依赖
 ├── next.config.js      # Next.js配置
 ├── tailwind.config.js  # Tailwind CSS配置
