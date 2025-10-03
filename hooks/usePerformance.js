@@ -457,3 +457,5 @@ export const useLazyData = (fetchFn, options = {}) => {
 };
 
 export default usePerformance;
+
+export { useLazyImage } from '../utils/performance';

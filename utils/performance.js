@@ -289,24 +289,39 @@ export const useLazyImage = (src, options = {}) => {
   const [imageSrc, setImageSrc] = useState(null);
   const [isLoaded, setIsLoaded] = useState(false);
   const [error, setError] = useState(null);
-  const imageRef = useIntersectionObserver(
-    (entry) => {
-      setImageSrc(src);
-    },
-    options
-  );
+  const loadStartTimeRef = useRef(null);
+
+  const handleIntersection = useCallback(() => {
+    loadStartTimeRef.current = performance.now();
+    setIsLoaded(false);
+    setError(null);
+    setImageSrc(src);
+  }, [src]);
+
+  const imageRef = useIntersectionObserver(handleIntersection, options);
 
   const handleLoad = useCallback(() => {
     setIsLoaded(true);
-    performanceMonitor.trackMetric('image_load_time', performance.now() - loadStartTime);
-  }, []);
+    if (loadStartTimeRef.current !== null) {
+      performanceMonitor.trackMetric(
+        'image_load_time',
+        performance.now() - loadStartTimeRef.current,
+        { src }
+      );
+    }
+  }, [src]);
 
   const handleError = useCallback((e) => {
     setError(e);
     performanceMonitor.trackMetric('image_load_error', 1, { src });
   }, [src]);
 
-  const loadStartTime = useRef(performance.now());
+  useEffect(() => {
+    setImageSrc(null);
+    setIsLoaded(false);
+    setError(null);
+    loadStartTimeRef.current = null;
+  }, [src]);
 
   return {
     ref: imageRef,
