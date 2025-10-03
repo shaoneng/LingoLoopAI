@@ -6,22 +6,27 @@
 - 访问 https://supabase.com
 - 创建新项目
 - 获取数据库连接字符串
+- 在 Settings → API 中复制 service_role 密钥 (保存为 `SUPABASE_SERVICE_ROLE_KEY`)
 
 ### 2. 配置数据库连接
 ```
-DATABASE_URL=postgresql://postgres:[password]@db.[project-id].supabase.co:5432/postgres
+# Prisma 运行时 (PgBouncer 连接池)
+DATABASE_URL=postgresql://postgres:[password]@db.[project-id].supabase.co:6543/postgres?pgbouncer=true&connection_limit=1&pool_timeout=60&sslmode=require
+
+# Prisma CLI (直连，用于 db push / migrate)
+DIRECT_URL=postgresql://postgres:[password]@aws-0-[region].supabase.co:5432/postgres?sslmode=require
 ```
 
 ### 3. 运行数据库迁移
 ```bash
-# 安装 Supabase CLI
-npm install -g supabase
+cd /path/to/LingoLoopAI
+cp .env.example .env.local # 或者手动更新环境变量
 
-# 初始化项目
-supabase init
+# 生成 Prisma Edge 客户端
+npx prisma generate
 
 # 推送 schema
-supabase db push
+npx prisma db push
 
 # 生成 Prisma 客户端
 npx prisma generate

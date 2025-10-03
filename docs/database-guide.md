@@ -1,6 +1,25 @@
 # Database Setup & Verification Guide
 
-This guide explains how to bring up the local Postgres instance used by the app, verify that Prisma can connect to it, and confirm that all expected tables exist.
+This guide explains how to either point the project at a Supabase-hosted Postgres
+instance (recommended for production) or bring up a local Postgres instance for
+development, verify that Prisma can connect, and confirm that all expected tables exist.
+
+## 0. Supabase quick start (remote database)
+1. Create a project in the Supabase dashboard.
+2. Copy the **Connection Pooling** string (port `6543`) into `DATABASE_URL` and the
+   **Direct** string (port `5432`) into `DIRECT_URL`. See `.env.example` for templates.
+3. Grab the `service_role` key from Supabase → Settings → API, storing it as
+   `SUPABASE_SERVICE_ROLE_KEY` for server-side access.
+4. Push the schema:
+   ```bash
+   npx prisma generate
+   npx prisma db push
+   ```
+5. Visit Supabase → Table editor to confirm that tables such as `User`, `AudioFile`,
+   and `TranscriptRun` exist.
+
+The remaining sections cover local Postgres setup, which is still useful for offline
+development or CI runs.
 
 ## 1. Environment & Configuration
 - Primary connection string: `.env.local` → `postgresql://postgres:postgres@localhost:5432/lingoloop?schema=public`.

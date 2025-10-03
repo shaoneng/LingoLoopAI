@@ -1,5 +1,5 @@
 import { setCors } from '../../lib/cors';
-import prisma from '../../lib/prisma';
+import { getSupabaseAdminClient } from '../../utils/supabase';
 
 export default async function handler(req, res) {
   setCors(req, res);
@@ -11,11 +11,19 @@ export default async function handler(req, res) {
   let dbError = null;
 
   try {
-    await prisma.$queryRaw`SELECT 1`;
+    const supabase = getSupabaseAdminClient();
+    const { error } = await supabase
+      .from('User')
+      .select('id', { head: true, limit: 1 });
+
+    if (error) {
+      throw error;
+    }
+
     dbStatus = 'ok';
   } catch (error) {
     dbStatus = 'error';
-    dbError = error.message || 'Database query failed';
+    dbError = error?.message || 'Database query failed';
   }
 
   const healthy = dbStatus === 'ok';

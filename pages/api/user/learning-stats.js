@@ -1,6 +1,9 @@
 import { setCors } from '../../../lib/cors';
-import prisma from '../../../lib/prisma';
 import { requireAuth } from '../../../lib/middleware/auth';
+import {
+  fetchLearningSessionsWithAudio,
+  fetchRecentSessionTimestamps,
+} from '../../../lib/supabase/learningSessions';
 
 export default async function handler(req, res) {
   setCors(req, res);
@@ -34,22 +37,7 @@ async function handleGetStats(req, res, user) {
     weekEnd.setDate(weekStart.getDate() + 6); // 本周结束（周六）
 
     // 获取用户的所有学习会话
-    const learningSessions = await prisma.learningSession.findMany({
-      where: {
-        userId: user.id,
-        deletedAt: null,
-      },
-      include: {
-        audioFile: {
-          select: {
-            durationMs: true,
-          },
-        },
-      },
-      orderBy: {
-        createdAt: 'desc',
-      },
-    });
+    const learningSessions = await fetchLearningSessionsWithAudio(user.id);
 
     // 计算总体统计
     const totalSessions = learningSessions.length;
@@ -137,19 +125,7 @@ async function handleGetStats(req, res, user) {
 
 async function calculateStreakDays(userId) {
   // 这里简化实现，实际应该按日期分组计算连续学习天数
-  const sessions = await prisma.learningSession.findMany({
-    where: {
-      userId: userId,
-      deletedAt: null,
-    },
-    select: {
-      createdAt: true,
-    },
-    orderBy: {
-      createdAt: 'desc',
-    },
-    take: 30, // 最近30天
-  });
+  const sessions = await fetchRecentSessionTimestamps(userId, 30);
 
   if (sessions.length === 0) return 0;
 

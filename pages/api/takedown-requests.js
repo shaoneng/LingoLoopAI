@@ -1,6 +1,10 @@
 import { setCors } from '../../lib/cors';
-import prisma from '../../lib/prisma';
 import { requireAuth } from '../../lib/middleware/auth';
+import {
+  findSharedResourceById,
+  createTakedownRequest,
+  listTakedownRequests,
+} from '../../lib/supabase/takedownRequests';
 
 export default async function handler(req, res) {
   setCors(req, res);
@@ -26,24 +30,18 @@ async function handleTakedownRequest(req, res) {
     }
 
     // Verify the resource exists
-    const resource = await prisma.sharedBbcResource.findUnique({
-      where: { id: resourceId }
-    });
+    const resource = await findSharedResourceById(resourceId);
 
     if (!resource) {
       return res.status(404).json({ error: '资源不存在' });
     }
 
     // Create takedown request
-    const takedownRequest = await prisma.takedownRequest.create({
-      data: {
-        resourceId,
-        reason,
-        contactInfo,
-        additionalInfo: additionalInfo || null,
-        status: 'pending',
-        requestType: 'copyright_infringement'
-      }
+    const takedownRequest = await createTakedownRequest({
+      resourceId,
+      reason,
+      contactInfo,
+      additionalInfo,
     });
 
     // Log the takedown request
@@ -77,19 +75,7 @@ async function handleListRequests(req, res) {
       return res.status(403).json({ error: '需要管理员权限' });
     }
 
-    const requests = await prisma.takedownRequest.findMany({
-      include: {
-        resource: {
-          select: {
-            id: true,
-            title: true,
-            sourceType: true,
-            isPublished: true
-          }
-        }
-      },
-      orderBy: { createdAt: 'desc' }
-    });
+    const requests = await listTakedownRequests();
 
     return res.status(200).json({ requests });
 
