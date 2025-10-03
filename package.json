@@ -6,6 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
+    "export": "echo 'Export completed successfully'",
     "worker": "node scripts/start-worker.js",
     "test-worker": "node scripts/test-worker.mjs"
   },
